@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جزئیات کوین</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+
+
+        canvas {
+            width: 100% !important;
+            height: 500px !important;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-detail">
+        <div class="heder">
+
+        </div>
+
+        <div class="content-detail">
+            <div class="inf-detail">
+                <div class="coin-detail-container">
+                    <div class="loading">در حال بارگذاری اطلاعات کوین...</div>
+                </div>
+            </div>
+
+            <div class="chart-detail">
+                <div class="coin-chart-container">
+                    <h2 id="coin-title">در حال بارگذاری...</h2>
+                    <div class="loading-chart">در حال دریافت اطلاعات چارت...</div>
+                    <canvas id="priceChart"></canvas>
+                </div>
+            </div>
+
+            <div class="comment-detail">
+                <div id="commentsList">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="/static/js/inf-coin.js"></script>
+    <script src="/static/js/chart-coin.js"></script>
+    <script src="/static/js/comment-coin.js"></script>
+
+</body>
+
+</html>

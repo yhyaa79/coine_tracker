@@ -4,15 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>چت صوتی با AI</title>
+    <title>AI</title>
 
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="../static/css/styles.css">
 
 </head>
 
 <body>
+    <div class="main">
+        <div class="heder">
 
-    <script src="./static/js/config.js"></script>
+        </div>
+
+        <div class="market-content">
+            <div id="market-overview"></div>
+        </div>
+
+        <div class="main-content">
+
+            <div class="coin-list">
+                <div class="heder-coin">
+                    <div class="heder-coin-num-list">#</div>
+                    <div class="heder-coin-logo">Logo</div>
+                    <div class="heder-coin-name">Name</div>
+                    <div class="heder-coin-price">Price</div>
+                    <div class="heder-coin-1h">1h</div>
+                    <div class="heder-coin-24h">24h</div>
+                    <div class="heder-coin-7d">7d</div>
+                    <div class="heder-coin-24h-volume">24h Volume</div>
+                    <div class="heder-coin-market-cap">Market Cap</div>
+
+                </div>
+
+                <div id="coins-container">
+                    <!-- کوین‌ها اینجا به صورت داینامیک اضافه می‌شن -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./static/js/coin-list.js"></script>
+    <script src="./static/js/market-content.js"></script>
+
 
 
 </body>

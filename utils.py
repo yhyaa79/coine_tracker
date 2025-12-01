@@ -2,120 +2,91 @@ import requests
 import pandas as pd
 from typing import Literal, Optional
 
-def get_crypto_chart_data(
-    coin_id: str = "bitcoin",
-    vs_currency: str = "usd",
+def get_crypto_chart_binance(
+    symbol: str = "BTCUSDT",
+    interval: Literal["1m", "5m", "15m", "1h", "4h", "1d"] = "1d",
     days: int = 30,
-    interval: Literal["daily", "hourly", "minutely"] = "daily",
-    include_volume: bool = True,
-    include_market_cap: bool = False
+    limit: int = 1000
 ) -> Optional[pd.DataFrame]:
-    """
-    دریافت داده‌های تاریخی کوین برای رسم چارت (OHLCV)
-    
-    پارامترها:
-    -----------
-    coin_id : str
-        آیدی کوین در CoinGecko (مثال: bitcoin, ethereum, cardano, solana)
-        لیست کامل: https://api.coingecko.com/api/v3/coins/list
-    
-    vs_currency : str
-        ارز مرجع (usd, eur, btc, eth و ...)
-    
-    days : int
-        تعداد روزهایی که می‌خوای داده بگیری (حداکثر 365 برای daily، 90 برای hourly)
-    
-    interval : "daily" | "hourly" | "minutely"
-        دقت زمانی داده‌ها
-    
-    include_volume : bool
-        آیا حجم معاملات رو هم برگردونه؟
-    
-    include_market_cap : bool
-        آیا مارکت کپ رو هم برگردونه؟ (مفید برای چارت ترکیبی)
-    
-    خروجی:
-    -------
-    pd.DataFrame با ستون‌های:
-        datetime   : تاریخ و زمان (datetime64[ns])
-        open       : قیمت باز شدن
-        high       : بالاترین قیمت
-        low        : پایین‌ترین قیمت
-        close      : قیمت بسته شدن (آخرین قیمت در بازه)
-        volume     : حجم معاملات (اگر فعال باشه)
-        market_cap : مارکت کپ (اگر فعال باشه)
-    """
-    
-    # محدود کردن days بر اساس interval (محدودیت CoinGecko)
-    if interval == "hourly" and days > 90:
-        days = 90
-        print("توجه: حداکثر برای hourly، 90 روز است. days به 90 تغییر کرد.")
-    elif interval == "minutely" and days > 1:
-        days = 1
-        print("توجه: برای minutely فقط 1 روز مجاز است.")
-    
-    url = f"https://api.coingecko.com/api/v3/coins/{coin_id}/market_chart"
-    params = {
-        "vs_currency": vs_currency,
-        "days": days,
-        "interval": interval
+    COINGECKO_TO_BINANCE = {
+        "bitcoin": "BTCUSDT", "ethereum": "ETHUSDT", "solana": "SOLUSDT",
+        "cardano": "ADAUSDT", "ripple": "XRPUSDT", "dogecoin": "DOGEUSDT",
+        "binancecoin": "BNBUSDT", "shiba-inu": "SHIBUSDT", "avalanche-2": "AVAXUSDT",
+        "polkadot": "DOTUSDT", "matic-network": "MATICUSDT", "tron": "TRXUSDT",
+        "litecoin": "LTCUSDT", "chainlink": "LINKUSDT", "toncoin": "TONUSDT",
     }
-    
+
+    original_symbol = symbol
+    symbol = COINGECKO_TO_BINANCE.get(symbol.lower(), original_symbol.upper() + "USDT")
+
+    url = "https://api.binance.com/api/v3/klines"
+    now = pd.Timestamp.now(tz='UTC')
+
+    # تشخیص All Time
+    is_all_time = days >= 1000
+
+    if is_all_time:
+        # بایننس از سال ۲۰۱۷ شروع شده، پس از ۲۰۱۷-۰۷-۱۷ شروع کن
+        start_time = int(pd.Timestamp("2017-07-17", tz='UTC').timestamp() * 1000)
+    else:
+        # برای دوره‌های کوتاه (1h): دقیق باشه، حاشیه نده
+        # برای دوره‌های روزانه: کمی حاشیه بده تا داده کامل باشه
+        if interval == "1h":
+            # فقط دقیقاً days روز قبل
+            start_time = int((now - pd.Timedelta(days=days)).timestamp() * 1000)
+        else:
+            # برای روزانه: ۱۰ روز حاشیه برای اطمینان از کامل بودن داده
+            start_time = int((now - pd.Timedelta(days=days + 10)).timestamp() * 1000)
+
+    end_time = int(now.timestamp() * 1000)
+
+    params = {
+        "symbol": symbol,
+        "interval": interval,
+        "startTime": start_time,
+        "endTime": end_time,
+        "limit": 1000
+    }
+
+    print(f"درخواست Binance: {symbol} | {interval} | {days} روز → از {pd.Timestamp(start_time, unit='ms', tz='UTC').date()}")
+
     try:
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.get(url, params=params, timeout=15)
         response.raise_for_status()
         data = response.json()
-        
-        # استخراج قیمت‌ها (همیشه موجوده)
-        prices = pd.DataFrame(data["prices"], columns=["timestamp", "close"])
-        
-        # ساخت دیتافریم پایه
-        df = prices.copy()
-        df["datetime"] = pd.to_datetime(df["timestamp"], unit="ms")
-        df = df.drop(columns=["timestamp"])
-        df = df.set_index("datetime")
-        
-        # چون CoinGecko OHLC مستقیم نمی‌ده، از close برای همه استفاده می‌کنیم (دقت کافی برای اکثر چارت‌ها)
-        # اگر نیاز به OHLC دقیق داری، باید از Binance یا CryptoCompare استفاده کنی
-        df["open"] = df["close"]
-        df["high"] = df["close"]
-        df["low"] = df["close"]
-        
-        # اضافه کردن حجم و مارکت کپ اگر خواسته شده
-        if include_volume and "total_volumes" in data:
-            volumes = pd.DataFrame(data["total_volumes"], columns=["timestamp", "volume"])
-            volumes["datetime"] = pd.to_datetime(volumes["timestamp"], unit="ms")
-            volumes = volumes.set_index("datetime")["volume"]
-            df = df.join(volumes, how="left")
-        
-        if include_market_cap and "market_caps" in data:
-            market_caps = pd.DataFrame(data["market_caps"], columns=["timestamp", "market_cap"])
-            market_caps["datetime"] = pd.to_datetime(market_caps["timestamp"], unit="ms")
-            market_caps = market_caps.set_index("datetime")["market_cap"]
-            df = df.join(market_caps, how="left")
-        
-        # مرتب کردن ستون‌ها به ترتیب استاندارد
-        column_order = ["open", "high", "low", "close"]
-        if "volume" in df.columns:
-            column_order.append("volume")
-        if "market_cap" in df.columns:
-            column_order.append("market_cap")
-            
-        df = df[column_order].round(6)
-        df = df.sort_index()  # مطمئن شو که زمان صعودی باشه
-        
-        print(f"داده‌های {coin_id.upper()} برای {days} روز با دقت {interval} با موفقیت دریافت شد.")
-        return df
-        
-    except requests.exceptions.RequestException as e:
-        print(f"خطا در ارتباط با API: {e}")
-        return None
+
+        if not data or isinstance(data, dict) and "code" in data:
+            print(f"خطا یا داده خالی از بایننس: {data}")
+            return None
+
+        df = pd.DataFrame(data, columns=[
+            "open_time", "open", "high", "low", "close", "volume",
+            "close_time", "quote_volume", "trades", "taker_buy_base", "taker_buy_quote", "ignore"
+        ])
+
+        df = df[["open_time", "open", "high", "low", "close", "volume"]]
+        df[["open", "high", "low", "close", "volume"]] = df[["open", "high", "low", "close", "volume"]].astype(float)
+        df["datetime"] = pd.to_datetime(df["open_time"], unit='ms', utc=True).dt.tz_convert(None)
+        df = df.set_index("datetime")[["open", "high", "low", "close", "volume"]]
+
+        # <<<--- این بخش اصلاح‌شده ---<<<
+        if not is_all_time:
+            # محاسبه دقیق زمان شروع دوره (مثلاً دقیقاً ۱ روز قبل)
+            cutoff = (pd.Timestamp.utcnow() - pd.Timedelta(days=days)).replace(tzinfo=None)
+            df = df[df.index >= cutoff]
+        # <<<--- تا اینجا ---<<<
+
+        # گرد کردن اعداد
+        df[["open", "high", "low", "close"]] = df[["open", "high", "low", "close"]].round(8)
+        df["volume"] = df["volume"].round(2)
+
+        print(f"موفق: {len(df)} کندل {interval} برای {symbol} (دوره: {days} روز)")
+
+        return df if not df.empty else None
+
     except Exception as e:
-        print(f"خطای غیرمنتظره: {e}")
+        print(f"خطا در دریافت داده از بایننس: {e}")
         return None
-
-
-
 
 #### mySQL ####
 

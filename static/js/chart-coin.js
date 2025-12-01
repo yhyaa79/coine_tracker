@@ -1,10 +1,10 @@
 let chartInstance = null;
+let currentChartType = 'line'; // پیش‌فرض: خطی
 
-async function getDataChart(coin, days = 60, interval = 'daily') {
+async function getDataChart(coin, period = '60') {
     const formData = new FormData();
     formData.append('coin', coin);
-    formData.append('days', days);
-    formData.append('interval', interval);
+    formData.append('period', period);
 
     try {
         const response = await fetch('/get_data_chart', {
@@ -18,224 +18,302 @@ async function getDataChart(coin, days = 60, interval = 'daily') {
             throw new Error(err.error || 'خطا در دریافت اطلاعات');
         }
 
-        const data = await response.json();
+        const result = await response.json();
+        const data = Array.isArray(result) ? result : (result.data || []);
 
-        if (!data || data.length === 0) {
+        if (data.length === 0) {
             throw new Error('داده‌ای برای نمایش چارت وجود ندارد');
         }
 
-        renderChart(data, coin.toUpperCase());
+        renderChart(data, coin.toUpperCase(), period);
         
     } catch (error) {
         console.error("خطا:", error);
         document.querySelector('.coin-chart-container').innerHTML = 
-            `<p style="color:red;text-align:center;font-size:18px;">
+            `<p style="color:red;text-align:center;font-size:18px;padding:40px 0;">
                 خطا در بارگذاری چارت<br><br>${error.message}
              </p>`;
     }
 }
 
-function renderChart(data, coinName) {
-    const ctx = document.getElementById('priceChart').getContext('2d');
-    
-    // آماده‌سازی داده‌ها
-    const labels = data.map(d => {
-        const date = new Date(d.datetime);
-        return date.toLocaleDateString('fa-IR', { month: 'short', day: 'numeric' });
-    });
-    
-    const prices = data.map(d => parseFloat(d.close));
-    const volumes = data.map(d => parseFloat(d.volume));
+function renderChart(data, coinName, period) {
+    console.log('%crenderChart شروع شد', 'color: cyan; font-weight: bold');
+    console.log('currentChartType:', currentChartType);
+    console.log('تعداد رکوردهای دریافتی:', data.length);
 
-    // محاسبه محدوده قیمت برای رنگ‌آمیزی گرادیانت
-    const minPrice = Math.min(...prices);
-    const maxPrice = Math.max(...prices);
-    const priceChange = prices[prices.length - 1] - prices[0];
-    const isPositive = priceChange >= 0;
-
-    // ایجاد گرادیانت
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    if (isPositive) {
-        gradient.addColorStop(0, 'rgba(34, 197, 94, 0.3)');
-        gradient.addColorStop(0.5, 'rgba(34, 197, 94, 0.1)');
-        gradient.addColorStop(1, 'rgba(34, 197, 94, 0)');
-    } else {
-        gradient.addColorStop(0, 'rgba(239, 68, 68, 0.3)');
-        gradient.addColorStop(0.5, 'rgba(239, 68, 68, 0.1)');
-        gradient.addColorStop(1, 'rgba(239, 68, 68, 0)');
+    const ctx = document.getElementById('priceChart');
+    if (!ctx) {
+        console.error('Canvas element not found!');
+        return;
     }
 
-    document.getElementById('coin-title').textContent = `چارت قیمت ${coinName}`;
+    // بررسی وجود پلاگین کندل استیک
+    if (currentChartType === 'candle') {
+        const hasFinancialPlugin = Chart.registry.plugins.get('chartjs-chart-financial') || 
+                                   (Chart.controllers && Chart.controllers.candlestick);
+        
+        if (!hasFinancialPlugin) {
+            console.error('%cپلاگین chartjs-chart-financial لود نشده است!', 'color: red; font-size: 14px');
+            alert('پلاگین نمودار کندل استیک لود نشده است. لطفاً صفحه را رفرش کنید.');
+            currentChartType = 'line';
+        }
+    }
 
-    if (chartInstance) chartInstance.destroy();
+    const candlestickData = data.map(d => ({
+        x: new Date(d.datetime).getTime(),
+        o: parseFloat(d.open),
+        h: parseFloat(d.high),
+        l: parseFloat(d.low),
+        c: parseFloat(d.close)
+    }));
 
-    chartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: `قیمت ${coinName}`,
-                    data: prices,
-                    borderColor: isPositive ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)',
-                    backgroundColor: gradient,
-                    borderWidth: 2.5,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    pointHoverRadius: 8,
-                    pointHoverBackgroundColor: isPositive ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)',
-                    pointHoverBorderColor: '#fff',
-                    pointHoverBorderWidth: 3,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'حجم معاملات',
-                    data: volumes,
-                    backgroundColor: 'rgba(100, 116, 139, 0.3)',
-                    borderColor: 'rgba(100, 116, 139, 0.5)',
-                    borderWidth: 1,
-                    type: 'bar',
-                    yAxisID: 'y1',
-                    order: 1
+    const prices = data.map(d => parseFloat(d.close));
+    const volumes = data.map(d => parseFloat(d.volume));
+    const timestamps = data.map(d => new Date(d.datetime).getTime());
+
+    const firstClose = candlestickData[0]?.c || prices[0];
+    const lastClose = candlestickData[candlestickData.length - 1]?.c || prices[prices.length - 1];
+    const isPositiveOverall = lastClose >= firstClose;
+
+    document.getElementById('coin-title').textContent = `چارت قیمت ${coinName.toUpperCase()}`;
+
+    if (chartInstance) {
+        chartInstance.destroy();
+        chartInstance = null;
+    }
+
+    const commonScales = {
+        x: {
+            type: 'time',
+            time: {
+                unit: period === '1' ? 'hour' : (period === '7' ? 'day' : 'day'),
+                tooltipFormat: period === '1' || period === '7' ? 'HH:mm - dd MMM' : 'dd MMM yyyy',
+                displayFormats: {
+                    hour: 'HH:mm',
+                    day: 'dd MMM',
+                    month: 'MMM yyyy'
                 }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false,
             },
-            plugins: {
-                legend: {
-                    display: true,
-                    position: 'top',
-                    align: 'end',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 15,
-                        font: {
-                            size: 12,
-                            family: 'Vazir, sans-serif'
-                        },
-                        color: '#64748b'
+            grid: { 
+                color: 'rgba(148, 163, 184, 0.05)', 
+                drawBorder: false 
+            },
+            ticks: {
+                maxTicksLimit: 9,
+                color: '#64748b',
+                font: { size: 11, family: 'Vazir, sans-serif' },
+                maxRotation: 0,
+                autoSkip: true
+            },
+            border: { display: false }
+        },
+        y: {
+            position: 'right',
+            beginAtZero: false,
+            grid: { 
+                color: 'rgba(148, 163, 184, 0.1)', 
+                drawBorder: false 
+            },
+            ticks: {
+                callback: value => '$' + Number(value).toLocaleString('en-US', { 
+                    minimumFractionDigits: 0, 
+                    maximumFractionDigits: 2 
+                }),
+                color: '#64748b',
+                font: { size: 11, family: 'Vazir, sans-serif' },
+                padding: 8
+            },
+            border: { display: false }
+        },
+        y1: {
+            display: false,
+            position: 'left',
+            beginAtZero: true,
+            max: Math.max(...volumes) * 3,
+            grid: { drawOnChartArea: false }
+        }
+    };
+
+    if (currentChartType === 'line') {
+        console.log('%cساخت چارت خطی...', 'color: green; font-weight: bold');
+        
+        const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, isPositiveOverall ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)');
+        gradient.addColorStop(0.5, isPositiveOverall ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)');
+        gradient.addColorStop(1, isPositiveOverall ? 'rgba(34, 197, 94, 0)' : 'rgba(239, 68, 68, 0)');
+
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timestamps,
+                datasets: [
+                    {
+                        label: `قیمت ${coinName.toUpperCase()}`,
+                        data: timestamps.map((t, i) => ({ x: t, y: prices[i] })),
+                        borderColor: isPositiveOverall ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)',
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: isPositiveOverall ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)',
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 3,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'حجم معاملات',
+                        data: timestamps.map((t, i) => ({ x: t, y: volumes[i] })),
+                        type: 'bar',
+                        yAxisID: 'y1',
+                        backgroundColor: 'rgba(100, 116, 139, 0.3)',
+                        borderColor: 'rgba(100, 116, 139, 0.6)',
+                        borderWidth: 1,
+                        barThickness: 6
                     }
-                },
-                tooltip: {
-                    enabled: true,
-                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                    titleColor: '#fff',
-                    bodyColor: '#cbd5e1',
-                    borderColor: '#334155',
-                    borderWidth: 1,
-                    padding: 12,
-                    bodySpacing: 6,
-                    titleFont: {
-                        size: 13,
-                        weight: 'bold',
-                        family: 'Vazir, sans-serif'
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { 
+                        display: true, 
+                        position: 'top', 
+                        align: 'end', 
+                        labels: { 
+                            usePointStyle: true, 
+                            padding: 20, 
+                            font: { size: 12, family: 'Vazir, sans-serif' }, 
+                            color: '#64748b' 
+                        } 
                     },
-                    bodyFont: {
-                        size: 12,
-                        family: 'Vazir, sans-serif'
-                    },
-                    displayColors: true,
-                    callbacks: {
-                        title: function(context) {
-                            return context[0].label;
-                        },
-                        label: function(context) {
-                            if (context.datasetIndex === 0) {
-                                const price = context.parsed.y;
-                                const prevPrice = context.dataIndex > 0 ? prices[context.dataIndex - 1] : price;
-                                const change = ((price - prevPrice) / prevPrice * 100).toFixed(2);
-                                const changeText = change >= 0 ? `+${change}%` : `${change}%`;
-                                return [
-                                    `قیمت: $${price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
-                                    `تغییرات: ${changeText}`
-                                ];
-                            } else {
-                                return `حجم: $${(context.parsed.y / 1e9).toFixed(2)}B`;
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        borderColor: '#334155',
+                        borderWidth: 1,
+                        padding: 12,
+                        rtl: true,
+                        callbacks: {
+                            label: function(context) {
+                                if (context.datasetIndex === 0) {
+                                    const price = context.parsed.y;
+                                    const prev = context.dataIndex > 0 ? prices[context.dataIndex - 1] : price;
+                                    const change = ((price - prev) / prev * 100).toFixed(2);
+                                    return [
+                                        `قیمت: $${price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 
+                                        `تغییرات: ${change >= 0 ? '+' : ''}${change}%`
+                                    ];
+                                } else {
+                                    return `حجم: $${(context.parsed.y / 1e9).toFixed(2)}B`;
+                                }
                             }
                         }
                     }
-                }
-            },
-            scales: {
-                y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    beginAtZero: false,
-                    grid: {
-                        color: 'rgba(148, 163, 184, 0.1)',
-                        drawBorder: false,
-                    },
-                    ticks: {
-                        callback: function(value) {
-                            return '$' + value.toLocaleString('en-US', {
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 2
-                            });
-                        },
-                        color: '#64748b',
-                        font: {
-                            size: 11,
-                            family: 'Vazir, sans-serif'
-                        },
-                        padding: 8
-                    },
-                    border: {
-                        display: false
-                    }
                 },
-                y1: {
-                    type: 'linear',
-                    display: false,
-                    position: 'left',
-                    beginAtZero: true,
-                    max: Math.max(...volumes) * 3,
-                    grid: {
-                        drawOnChartArea: false,
-                    }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(148, 163, 184, 0.05)',
-                        drawBorder: false,
-                    },
-                    ticks: {
-                        maxTicksLimit: 8,
-                        color: '#64748b',
-                        font: {
-                            size: 11,
-                            family: 'Vazir, sans-serif'
-                        },
-                        maxRotation: 0,
-                        autoSkip: true
-                    },
-                    border: {
-                        display: false
-                    }
-                }
-            },
-            layout: {
-                padding: {
-                    left: 10,
-                    right: 10,
-                    top: 10,
-                    bottom: 10
-                }
+                scales: commonScales
             }
+        });
+
+        console.log('%cچارت خطی ساخته شد', 'color: green');
+
+    } else {
+        console.log('%cساخت چارت کندل استیک...', 'color: yellow; font-weight: bold');
+
+        try {
+            chartInstance = new Chart(ctx, {
+                type: 'candlestick',
+                data: {
+                    datasets: [
+                        {
+                            label: `${coinName.toUpperCase()}`,
+                            data: candlestickData,
+                            borderColor: {
+                                up: 'rgb(34, 197, 94)',
+                                down: 'rgb(239, 68, 68)',
+                                unchanged: '#64748b'
+                            },
+                            backgroundColor: {
+                                up: 'rgba(34, 197, 94, 0.8)',
+                                down: 'rgba(239, 68, 68, 0.8)',
+                                unchanged: 'rgba(100, 116, 139, 0.8)'
+                            },
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'حجم معاملات',
+                            data: timestamps.map((t, i) => ({ x: t, y: volumes[i] })),
+                            type: 'bar',
+                            yAxisID: 'y1',
+                            backgroundColor: 'rgba(100, 116, 139, 0.3)',
+                            borderColor: 'rgba(100, 116, 139, 0.6)',
+                            borderWidth: 1,
+                            barThickness: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { 
+                            display: true, 
+                            position: 'top', 
+                            align: 'end', 
+                            labels: { 
+                                usePointStyle: true, 
+                                padding: 20, 
+                                font: { size: 12, family: 'Vazir, sans-serif' }, 
+                                color: '#64748b' 
+                            } 
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            titleColor: '#fff',
+                            bodyColor: '#cbd5e1',
+                            borderColor: '#334155',
+                            borderWidth: 1,
+                            padding: 12,
+                            rtl: true,
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.datasetIndex === 0) {
+                                        const d = context.raw;
+                                        return [
+                                            `باز: $${d.o.toFixed(2)}`,
+                                            `بالا: $${d.h.toFixed(2)}`,
+                                            `پایین: $${d.l.toFixed(2)}`,
+                                            `بسته: $${d.c.toFixed(2)}`
+                                        ];
+                                    } else {
+                                        return `حجم: $${(context.parsed.y / 1e9).toFixed(2)}B`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: commonScales
+                }
+            });
+
+            console.log('%cچارت کندل استیک با موفقیت ساخته شد!', 'color: green; font-weight: bold');
+
+        } catch (error) {
+            console.error('%cخطا در ساخت چارت کندل استیک:', 'color: red; font-size: 16px');
+            console.error(error);
+            
+            alert('خطا در نمایش نمودار کندل استیک. چارت به حالت خطی تغییر می‌کند.');
+            currentChartType = 'line';
+            renderChart(data, coinName, period);
+            return;
         }
-    });
+    }
 
-    // اضافه کردن اطلاعات آماری
     displayStats(prices, volumes, coinName);
-
-    // حذف پیام لودینگ
     document.querySelector('.loading-chart')?.remove();
 }
 
@@ -289,14 +367,48 @@ function displayStats(prices, volumes, coinName) {
     chartContainer.appendChild(statsDiv);
 }
 
-
 function getCoinFromUrl() {
     const params = new URLSearchParams(window.location.search);
     return params.get('name') || 'bitcoin';
 }
 
 window.addEventListener('load', () => {
-    const coinId = getCoinFromUrl();
-    document.getElementById('coin-title').textContent = `در حال بارگذاری چارت ${coinId.toUpperCase()}...`;
-    getDataChart(coinId, 60, 'daily');
+    // تاخیر کوتاه برای اطمینان از لود شدن کامل پلاگین‌ها
+    setTimeout(() => {
+        const coinId = getCoinFromUrl();
+        document.getElementById('coin-title').textContent = `در حال بارگذاری چارت ${coinId.toUpperCase()}...`;
+        getDataChart(coinId, '7');
+    }, 100);
+});
+
+document.querySelectorAll('.period-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const period = this.dataset.period;
+        const coinId = getCoinFromUrl();
+
+        document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        document.getElementById('coin-title').textContent = 
+            period === 'all' ? 'در حال بارگذاری کل تاریخچه...' : 'در حال بارگذاری...';
+
+        getDataChart(coinId, period);
+    });
+});
+
+document.querySelectorAll('.chart-type-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const type = this.dataset.type;
+
+        document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        if (currentChartType !== type) {
+            currentChartType = type;
+            const coinId = getCoinFromUrl();
+            const activePeriodBtn = document.querySelector('.period-btn.active');
+            const period = activePeriodBtn ? activePeriodBtn.dataset.period : '7';
+            getDataChart(coinId, period);
+        }
+    });
 });

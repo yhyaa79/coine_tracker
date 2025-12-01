@@ -1,7 +1,7 @@
 import os
 # بالای فایل، بعد از importها این خط رو اضافه کن
 from flask import Flask, request, jsonify, Response, session, send_from_directory, render_template
-from utils import get_crypto_chart_data, add_comment, get_comments_by_coin
+from utils import get_crypto_chart_binance, add_comment, get_comments_by_coin
 import requests
 """ from utils import 
 from config import  """
@@ -147,30 +147,32 @@ def inf_coin(coinID):
 def get_data_chart():
     try:
         coin_id = request.form.get('coin', 'bitcoin').lower()
-        days = int(request.form.get('days', 30))
-        interval = request.form.get('interval', 'daily')
+        period = request.form.get('period', '60')
 
-        # محدودیت‌های CoinGecko
-        if interval == 'hourly' and days > 90:
-            days = 90
-        elif interval == 'minutely' and days > 1:
-            days = 1
+        PERIOD_CONFIG = {
+            "1":    (1,   "1h"),   # ۱ روز → ۲۴ ساعت اخیر (ساعتی)
+            "7":    (7,   "1h"),   # ۷ روز → ساعتی
+            "30":   (30,  "1d"),   # ۳۰ روز → روزانه
+            "60":   (60,  "1d"),
+            "120":  (120, "1d"),
+            "all":  (5000,"1d"),   # همه → از ۲۰۱۷ به بعد
+        }
 
-        df = get_crypto_chart_data(
-            coin_id=coin_id,
-            vs_currency="usd",
-            days=days,
+        if period not in PERIOD_CONFIG:
+            return jsonify({"error": "دوره نامعتبر"}), 400
+
+        days, interval = PERIOD_CONFIG[period]
+
+        df = get_crypto_chart_binance(
+            symbol=coin_id,
             interval=interval,
-            include_volume=True
+            days=days
         )
 
         if df is None or df.empty:
             return jsonify({"error": "داده‌ای یافت نشد"}), 404
 
-        # تبدیل DataFrame به لیست دیکشنری برای JSON قابل سریالایز شدن
         data = df.reset_index().to_dict(orient='records')
-
-        # تبدیل datetime به رشته (برای جلوگیری از خطای JSON)
         for row in data:
             row['datetime'] = row['datetime'].strftime('%Y-%m-%d %H:%M:%S')
 
@@ -178,9 +180,8 @@ def get_data_chart():
 
     except Exception as e:
         print("خطا در get_data_chart:", e)
-        return jsonify({"error": str(e)}), 500
-
-    
+        return jsonify({"error": "خطای سرور"}), 500
+        
 
 @app.route('/comments_coin/<coin>', methods=['GET'])
 def comments_coin(coin):

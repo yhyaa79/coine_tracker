@@ -245,16 +245,22 @@ span {
 
 
 .inf-detail {
-    border-left: 1px solid #575757;
-    width: 25%;
+    position: absolute;
+    right: 0;
+    width: 271px;
     height: 800px;
     padding: 5px;
+    padding-right: 12px;
+
 }
 
 
 
 .chart-detail {
-    width: 50%;
+    width: 100%;
+    margin: 0 280px 0 280px;
+    border-right: 1px solid #575757;
+    border-left: 1px solid #575757;
     height: 800px;
     padding: 5px;
 }
@@ -263,10 +269,13 @@ span {
 
 
 .comment-detail {
-    border-right: 1px solid #575757;
-    width: 25%;
+    position: absolute;
+    left: 0;
+    width: 271px;
     height: 800px;
     padding: 5px;
+    padding-left: 12px;
+
 }
 
 
@@ -294,8 +303,9 @@ span {
 }
 
 .rank-coin {
+    display: flex;
     margin-right: auto;
-    margin-left: 5px;
+    margin-left: 2px;
 }
 
 
@@ -381,5 +391,73 @@ span {
 
 
 
+.period-buttons {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    display: flow;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 7px 2%;
+}
 
 
+.period-btn {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    color: #bdbdbd;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 6px 3%;
+    margin: 0 1%;
+}
+
+.period-btn:hover {
+    background: rgba(255, 255, 255, 0.185);
+}
+
+.period-btn.active {
+    background: rgba(255, 255, 255, 0.185);
+}
+
+.chart-type-buttons {
+    position: absolute;
+    left: 0px;
+    margin-top: 5px;
+    width: 180px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    display: flow;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 7px 2%;
+}
+
+.chart-type-btn {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    color: #bdbdbd;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 6px 3%;
+    margin: 0 1%;
+}
+
+.chart-type-btn:hover {
+    background: rgba(255, 255, 255, 0.185);
+}
+
+.chart-type-btn.active {
+    background: rgba(255, 255, 255, 0.185);
+}
+
+#coin-title {
+    display: none;
+}
+
+#priceChart {
+    display: block;
+    box-sizing: border-box;
+    height: 749px;
+    width: 548px;
+    margin-top: 35px;
+}

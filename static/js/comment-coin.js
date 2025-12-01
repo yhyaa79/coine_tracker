@@ -44,10 +44,10 @@ async function loadCoinComment() {
             commentsHTML += `
                 <div class="comment-item">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <strong style="color:#2c3e50;">${escapeHtml(comment.username || 'ناشناس')}</strong>
-                        <small style="color:#95a5a6;">${comment.created_at}</small>
+                        <strong>${escapeHtml(comment.username || 'ناشناس')}</strong>
+                        <small>${comment.created_at}</small>
                     </div>
-                    <div style="color:#34495e;line-height:1.7;white-space:pre-wrap;">
+                    <div>
                         ${escapeHtml(comment.comment)}
                     </div>
                 </div>

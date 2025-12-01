@@ -45,35 +45,30 @@ async function loadCoinDetail() {
                     <div>
                         <h3>${coin.name} <small>(${coin.symbol.toUpperCase()})</small></h3>
                     </div>
+                    <div class="rank-coin"><strong>رتبه:</strong><p>#${coin.rank}</p></div>
                 </div>
                 <div>
                     <h2>$${Number(coin.price_usd).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 8})}</h2>
                 </div>
                 <div class="category-inf">
-                    <div class="direction-inf-coin"><strong>قیمت:</strong> ${Number(coin.price_btc).toFixed(8)}</div>
-                    <div class="direction-inf-coin"><strong>رتبه:</strong> #${coin.rank}</div>
+                    <div class="direction-inf-coin"><strong>قیمت:</strong> <p>${Number(coin.price_btc).toFixed(8)}</p></div>
                     <div class="direction-inf-coin"><strong>تغییرات ۱ ساعت:</strong> 
                         <span class="${coin.percent_change_1h >= 0 ? 'positive' : 'negative'}">
-                            ${Number(coin.percent_change_1h).toFixed(2)}%
+                            <p>${Number(coin.percent_change_1h).toFixed(2)}%</p>
                         </span>
                     </div>
                     <div class="direction-inf-coin"><strong>تغییرات ۲۴ ساعت:</strong> 
                         <span class="${coin.percent_change_24h >= 0 ? 'positive' : 'negative'}">
-                            ${Number(coin.percent_change_24h).toFixed(2)}%
-                        </span>
-                    </div>
-                    <div class="direction-inf-coin"><strong>تغییرات ۷ روز:</strong> 
-                        <span class="${coin.percent_change_7d >= 0 ? 'positive' : 'negative'}">
-                            ${Number(coin.percent_change_7d).toFixed(2)}%
+                            <p>${Number(coin.percent_change_24h).toFixed(2)}%</p>
                         </span>
                     </div>
 
-                    <div class="direction-inf-coin"><strong>سکه در گردش:</strong> ${Number(coin.csupply || 0).toLocaleString()}</div>
-                    <div class="direction-inf-coin"><strong>کل عرضه:</strong> ${coin.tsupply ? Number(coin.tsupply).toLocaleString() : 'نامحدود'}</div>
-                    <div class="direction-inf-coin"><strong>حداکثر عرضه:</strong> ${coin.msupply ? Number(coin.msupply).toLocaleString() : 'نامحدود'}</div>
+                    <div class="direction-inf-coin"><strong>سکه در گردش:</strong><p> ${Number(coin.csupply || 0).toLocaleString()}</p></div>
+                    <div class="direction-inf-coin"><strong>کل عرضه:</strong><p> ${coin.tsupply ? Number(coin.tsupply).toLocaleString() : 'نامحدود'}</p></div>
+                    <div class="direction-inf-coin"><strong>حداکثر عرضه:</strong><p> ${coin.msupply ? Number(coin.msupply).toLocaleString() : 'نامحدود'}</p></div>
                 </div>
-                <div class="direction-inf-coin"><strong>ارزش بازار:</strong> $${Number(coin.market_cap_usd || 0).toLocaleString()}</div>
-                <div class="direction-inf-coin"><strong>حجم معاملات ۲۴ ساعت:</strong> $${Number(coin.volume24 || 0).toLocaleString()}</div>
+                <div class="direction-inf-coin"><strong>ارزش بازار:</strong><p> $${Number(coin.market_cap_usd || 0).toLocaleString()}</p></div>
+                <div class="direction-inf-coin"><strong>حجم معاملات ۲۴ ساعت:</strong><p> $${Number(coin.volume24 || 0).toLocaleString()}</p></div>
 
             `;
 

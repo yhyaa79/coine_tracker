@@ -251,34 +251,28 @@ function displayStats(prices, volumes, coinName) {
     const avgVolume = volumes.reduce((a, b) => a + b, 0) / volumes.length;
 
     const statsHTML = `
-        <div style="display: flex; justify-content: space-around; margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: 12px; flex-wrap: wrap; gap: 15px;">
-            <div style="text-align: center;">
-                <div style="color: #64748b; font-size: 12px; margin-bottom: 5px;">قیمت فعلی</div>
-                <div style="font-weight: bold; font-size: 18px; color: #0f172a;">
-                    $${currentPrice.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                </div>
-            </div>
-            <div style="text-align: center;">
-                <div style="color: #64748b; font-size: 12px; margin-bottom: 5px;">تغییرات</div>
-                <div style="font-weight: bold; font-size: 18px; color: ${isPositive ? '#22c55e' : '#ef4444'};">
+        <div class="bottom-chart">
+            <div class="stat-item">
+                <div class="stat-label">تغییرات</div>
+                <div class="stat-value ${isPositive ? 'stat-change-positive' : 'stat-change-negative'}">
                     ${isPositive ? '+' : ''}${priceChangePercent}%
                 </div>
             </div>
-            <div style="text-align: center;">
-                <div style="color: #64748b; font-size: 12px; margin-bottom: 5px;">بالاترین</div>
-                <div style="font-weight: bold; font-size: 18px; color: #0f172a;">
+            <div class="stat-item">
+                <div class="stat-label">بالاترین</div>
+                <div class="stat-value stat-high-low">
                     $${high.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 </div>
             </div>
-            <div style="text-align: center;">
-                <div style="color: #64748b; font-size: 12px; margin-bottom: 5px;">پایین‌ترین</div>
-                <div style="font-weight: bold; font-size: 18px; color: #0f172a;">
+            <div class="stat-item">
+                <div class="stat-label">پایین‌ترین</div>
+                <div class="stat-value stat-high-low">
                     $${low.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                 </div>
             </div>
-            <div style="text-align: center;">
-                <div style="color: #64748b; font-size: 12px; margin-bottom: 5px;">میانگین حجم</div>
-                <div style="font-weight: bold; font-size: 18px; color: #0f172a;">
+            <div class="stat-item">
+                <div class="stat-label">میانگین حجم</div>
+                <div class="stat-value stat-volume">
                     $${(avgVolume / 1e9).toFixed(2)}B
                 </div>
             </div>
@@ -287,15 +281,14 @@ function displayStats(prices, volumes, coinName) {
 
     const chartContainer = document.querySelector('.coin-chart-container');
     const existingStats = chartContainer.querySelector('.chart-stats');
-    if (existingStats) {
-        existingStats.remove();
-    }
+    if (existingStats) existingStats.remove();
     
     const statsDiv = document.createElement('div');
     statsDiv.className = 'chart-stats';
     statsDiv.innerHTML = statsHTML;
     chartContainer.appendChild(statsDiv);
 }
+
 
 function getCoinFromUrl() {
     const params = new URLSearchParams(window.location.search);

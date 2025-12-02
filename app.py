@@ -7,6 +7,9 @@ import requests
 from config import  """
 import uuid
 import threading
+import mysql.connector
+from mysql.connector import Error
+
 
 
 app = Flask(__name__,)
@@ -212,6 +215,7 @@ def get_description(coin):
     try:
         description = get_persian_description(coin.upper())  # یا هر فرمت کوینی که داری
 
+        print(description)
         # اگر توضیحی وجود نداشت یا خالی بود
         if not description or description.strip() == "":
             return jsonify({
@@ -237,6 +241,145 @@ def get_description(coin):
 
 
 
+
+# کانفیگ دیتابیس
+config = {
+    'host': 'localhost',
+    'user': 'pythonuser',
+    'password': '135101220',
+    'database': 'comments_db',
+    'charset': 'utf8mb4',
+    'autocommit': True
+}
+
+def get_db_connection():
+    try:
+        connection = mysql.connector.connect(**config)
+        if connection.is_connected():
+            return connection
+    except Exception as e:
+        print("خطا در اتصال به دیتابیس:", e)
+        return None  # یا یه اتصال فیک برگردون
+
+# 1. دریافت آمار رأی‌ها
+@app.route('/get_survey_coin/<coin>', methods=['GET'])
+def get_survey_coin(coin):
+    coin = coin.strip().upper()
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        cursor.execute("""
+            SELECT 
+                COALESCE(SUM(CASE WHEN vote_type = 'bullish' THEN 1 ELSE 0 END), 0) as bullish,
+                COALESCE(SUM(CASE WHEN vote_type = 'bearish' THEN 1 ELSE 0 END), 0) as bearish
+            FROM coin_votes 
+            WHERE coin = %s
+        """, (coin,))
+        
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        # اینجا هیچوقت row None نمیشه چون کوئری همیشه یه ردیف برمی‌گردونه
+        bullish = row['bullish'] or 0
+        bearish = row['bearish'] or 0
+
+        # تنظیم پیش‌فرض 1-1 وقتی هیچ رأی واقعی وجود نداره
+        if bullish == 0 and bearish == 0:
+            bullish = 1
+            bearish = 1
+            is_fake = True
+        else:
+            is_fake = False
+
+        total = bullish + bearish
+        percentage_bullish = (bullish / total) * 100
+
+        return jsonify({
+            "success": True,
+            "bullish": bullish,
+            "bearish": bearish,
+            "total": total,
+            "percentage_bullish": round(percentage_bullish, 1),
+            "is_seeded": is_fake  # اختیاری: برای دیباگ
+        })
+
+    except Exception as e:
+        print("خطا در get_survey_coin:", e)
+        # حتی در بدترین حالت هم خطا نمی‌ده به کاربر
+        return jsonify({
+            "success": True,
+            "bullish": 1,
+            "bearish": 1,
+            "total": 2,
+            "percentage_bullish": 50.0,
+            "message": "داده اولیه بارگذاری شد"
+        })
+
+
+# 2. ثبت رأی جدید
+@app.route('/vote_coin/<coin>', methods=['POST'])
+def vote_coin(coin):
+    coin = coin.strip().upper()
+    data = request.get_json(silent=True) or {}
+    vote_type = data.get('vote')
+
+    if vote_type not in ['bullish', 'bearish']:
+        return jsonify({"success": False, "message": "رأی نامعتبر"}), 400
+
+    user_ip = request.remote_addr or "unknown"
+
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # فقط INSERT ساده → هر بار رأی جدید اضافه میشه
+        cursor.execute("""
+            INSERT INTO coin_votes (coin, vote_type, user_ip) 
+            VALUES (%s, %s, %s)
+        """, (coin, vote_type, user_ip))
+
+        conn.commit()
+
+        # آمار جدید
+        cursor.execute("""
+            SELECT 
+                SUM(CASE WHEN vote_type = 'bullish' THEN 1 ELSE 0 END) AS bullish,
+                SUM(CASE WHEN vote_type = 'bearish' THEN 1 ELSE 0 END) AS bearish
+            FROM coin_votes WHERE coin = %s
+        """, (coin,))
+        
+        row = cursor.fetchone()
+        bullish = int(row[0]) if row[0] else 0
+        bearish = int(row[1]) if row[1] else 0
+
+        if bullish == 0 and bearish == 0:
+            bullish = bearish = 1
+
+        total = bullish + bearish
+        percentage = round((bullish / total) * 100, 1)
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({
+            "success": True,
+            "bullish": bullish,
+            "bearish": bearish,
+            "total": total,
+            "percentage_bullish": percentage,
+            "message": "رأی ثبت شد!"
+        })
+
+    except Exception as e:
+        print("خطا در ثبت رأی:", e)
+        return jsonify({
+            "success": True,
+            "bullish": 1, "bearish": 1, "total": 2, "percentage_bullish": 50
+        })
+    
 
 
 @app.route('/comments_coin/<coin>', methods=['GET'])

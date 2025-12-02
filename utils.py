@@ -351,3 +351,62 @@ def get_persian_description(coin_id="bitcoin"):
         cursor.close()
         conn.close()
         return f"خطای غیرمنتظره: {e}"
+    
+
+
+
+### ثبت و دریافت رای برای هر کوین
+""" 
+# کانفیگ دیتابیس (همون قبلی)
+config = {
+    'host': 'localhost',
+    'user': 'pythonuser',
+    'password': '135101220',
+    'database': 'comments_db',
+    'charset': 'utf8mb4',
+    'autocommit': True,
+    'raise_on_warnings': True
+}
+
+def get_db_connection():
+    try:
+        conn = mysql.connector.connect(**config)
+        if conn.is_connected():
+            return conn
+    except Error as e:
+        print("خطا در اتصال به دیتابیس:", e)
+    return None
+
+def create_coin_votes_table():
+    conn = get_db_connection()
+    if not conn:
+        return False
+
+    cursor = conn.cursor()
+
+    create_table_query = `
+    CREATE TABLE IF NOT EXISTS coin_votes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        coin VARCHAR(50) NOT NULL,
+        vote_type ENUM('bullish', 'bearish') NOT NULL,
+        user_ip VARCHAR(45) NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_coin (coin)   -- فقط ایندکس برای جستجوی سریع
+        -- UNIQUE KEY حذف شد → اجازه رأی چندباره داده میشه
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `
+
+    try:
+        cursor.execute("DROP TABLE IF EXISTS coin_votes")  # فقط برای تست — بعداً حذفش کن
+        cursor.execute(create_table_query)
+        conn.commit()
+        print("جدول coin_votes بازسازی شد (رأی چندباره فعال)")
+        return True
+    except Error as e:
+        print("خطا:", e)
+    finally:
+        cursor.close()
+        conn.close()
+
+
+ """

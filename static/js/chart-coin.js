@@ -318,6 +318,8 @@ function renderChart(data, coinName, period) {
 }
 
 function displayStats(prices, volumes, coinName) {
+    if (!prices || prices.length === 0) return;
+
     const currentPrice = prices[prices.length - 1];
     const firstPrice = prices[0];
     const priceChange = currentPrice - firstPrice;
@@ -328,43 +330,26 @@ function displayStats(prices, volumes, coinName) {
     const low = Math.min(...prices);
     const avgVolume = volumes.reduce((a, b) => a + b, 0) / volumes.length;
 
-    const statsHTML = `
-        <div class="bottom-chart">
-            <div class="stat-item">
-                <div class="stat-label">تغییرات</div>
-                <div class="stat-value ${isPositive ? 'stat-change-positive' : 'stat-change-negative'}">
-                    ${isPositive ? '+' : ''}${priceChangePercent}%
-                </div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">بالاترین</div>
-                <div class="stat-value stat-high-low">
-                    $${high.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                </div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">پایین‌ترین</div>
-                <div class="stat-value stat-high-low">
-                    $${low.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
-                </div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-label">میانگین حجم</div>
-                <div class="stat-value stat-volume">
-                    $${(avgVolume / 1e9).toFixed(2)}B
-                </div>
-            </div>
-        </div>
-    `;
+    // فقط مقدارها رو آپدیت می‌کنیم (ساختار قبلاً در HTML هست)
+    const statsContainer = document.querySelector('.chart-stats .bottom-chart');
+    if (!statsContainer) return;
 
-    const chartContainer = document.querySelector('.coin-chart-container');
-    const existingStats = chartContainer.querySelector('.chart-stats');
-    if (existingStats) existingStats.remove();
-    
-    const statsDiv = document.createElement('div');
-    statsDiv.className = 'chart-stats';
-    statsDiv.innerHTML = statsHTML;
-    chartContainer.appendChild(statsDiv);
+    // تغییرات
+    const changeEl = statsContainer.children[0].querySelector('.stat-value');
+    changeEl.textContent = `${isPositive ? '+' : ''}${priceChangePercent}%`;
+    changeEl.className = `stat-value ${isPositive ? 'stat-change-positive' : 'stat-change-negative'}`;
+
+    // بالاترین
+    statsContainer.children[1].querySelector('.stat-value').textContent = 
+        `$${high.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+    // پایین‌ترین
+    statsContainer.children[2].querySelector('.stat-value').textContent = 
+        `$${low.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+    // میانگین حجم
+    statsContainer.children[3].querySelector('.stat-value').textContent = 
+        `$${(avgVolume / 1e9).toFixed(2)}B`;
 }
 
 function getCoinFromUrl() {

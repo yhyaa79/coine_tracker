@@ -1,3 +1,22 @@
+console.log("aaaaaaa");
+
+
+// تابع جدید برای تبدیل نقطه به خط جدید
+function formatDescriptionWithLineBreaks(text) {
+    if (!text || typeof text !== 'string') return '';
+
+    // اول HTML رو اسکیپ می‌کنیم (امنیت XSS)
+    const escaped = escapeHtml(text);
+
+    // هر نقطه + فاصله‌های احتمالی بعدش رو پیدا می‌کنیم و <br> می‌ذاریم
+    // این regex تقریباً همه حالت‌ها رو پوشش می‌ده: . یا . یا 。 یا ...
+    return escaped.replace(/\.(?=\s|$)/g, '.<br>');
+    // یا اگر می‌خوای بعد از هر نقطه حتی بدون فاصله هم خط جدید بشه:
+    // return escaped.replace(/\./g, '.<br>');
+}
+
+
+
 async function loadCoinDescription() {
     const coinName = getCoinFromUrl();
     if (!coinName) {
@@ -39,19 +58,15 @@ async function loadCoinDescription() {
 
         // نمایش متن توضیحات به صورت زیبا و خوانا
         descriptionCoin.innerHTML = `
-            <div class="coin-description-box" style="
-                background: #f8f9fa;
-                border: 1px solid #e0e0e0;
-                border-radius: 12px;
-                padding: 24px;
-                line-height: 1.85;
-                font-size: 15px;
-                color: #2c3e50;
-                direction: rtl;
-                text-align: justify;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            ">
+            <div class="coin-description-box">
                 <div style="white-space: pre-wrap;">${escapeHtml(result.description)}</div>
+            </div>
+        `;
+
+        // نمایش متن توضیحات با خط جدید بعد از هر نقطه
+        descriptionCoin.innerHTML = `
+            <div class="coin-description-box">
+                ${formatDescriptionWithLineBreaks(result.description)}
             </div>
         `;
 
@@ -72,6 +87,7 @@ function escapeHtml(text) {
     div.textContent = text;
     return div.innerHTML;
 }
+
 
 // اجرای خودکار بعد از لود صفحه
 window.addEventListener('load', loadCoinDescription);

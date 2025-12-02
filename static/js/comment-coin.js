@@ -1,6 +1,5 @@
 async function loadCoinComment() {
     const coinName = getCoinFromUrl();
-    console.log(coinName)
     if (!coinName) {
         document.getElementById('commentsList').innerHTML =
             '<p style="color:red;text-align:center;padding:20px;">کوین یافت نشد! آیدی معتبر نیست.</p>';
@@ -47,7 +46,7 @@ async function loadCoinComment() {
                         <strong>${escapeHtml(comment.username || 'ناشناس')}</strong>
                         <small>${comment.created_at}</small>
                     </div>
-                    <div>
+                    <div style="font-size: 14px">
                         ${escapeHtml(comment.comment)}
                     </div>
                 </div>
@@ -66,6 +65,86 @@ async function loadCoinComment() {
         `;
     }
 }
+
+
+
+function showCommenting() {
+    const addComment = document.getElementById('addComment')
+    const commentsList = document.getElementById('commentsList')
+    const commenting = document.getElementById('commenting')
+
+    addComment.style.display = 'none'
+    commentsList.style.display = 'none'
+    commenting.style.display = 'flow'
+}
+
+function hideCommenting() {
+    const addComment = document.getElementById('addComment')
+    const commentsList = document.getElementById('commentsList')
+    const commenting = document.getElementById('commenting')
+
+    addComment.style.display = 'flow-root'
+    commentsList.style.display = 'block'
+    commenting.style.display = 'none'
+}
+
+
+async function addCommentFun() {
+    const coinName = getCoinFromUrl();
+    const commentingUsername = document.getElementById('commentingUserame');  // اصلاح نام متغیر
+    const commentingComment = document.getElementById('commentingComment');
+    const commentsContainer = document.getElementById('commentsList'); // اضافه کردن تعریف
+
+    // چک کردن وجود المان‌ها و خالی نبودن
+    if (!commentingUsername.value.trim() || !commentingComment.value.trim()) {
+        alert("نام کاربری و نظر نمی‌تواند خالی باشد!");
+        return;
+    }
+
+    try {
+        const response = await fetch('/add_comment', {
+            method: 'POST',  // ← اینجا باید POST باشه!
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',  // یا json اگر بخوای
+                // 'X-Requested-With': 'XMLHttpRequest' // در صورت نیاز CSRF
+            },
+            credentials: 'include',
+            body: new URLSearchParams({
+                'coin': coinName,
+                'username': commentingUsername.value.trim(),
+                'comment': commentingComment.value.trim(),
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`خطای سرور: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success || result === true) {  // بسته به چیزی که برمی‌گردونی
+            // پاک کردن فیلدها
+            commentingUsername.value = '';
+            commentingComment.value = '';
+
+            hideCommenting();
+            alert("نظر شما با موفقیت ثبت شد!");
+            
+            // اگر می‌خوای لیست کامنت‌ها رو رفرش کنی:
+            loadCoinComment()
+        } else {
+            alert("خطا در ثبت نظر: " + (result.error || "نامشخص"));
+        }
+
+    } catch (error) {
+        console.error("خطا در ارسال نظر:", error);
+        loadCoinComment();
+    }
+}
+
+
+
+
 
 // تابع امن‌سازی متن برای جلوگیری از XSS
 function escapeHtml(text) {

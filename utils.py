@@ -588,3 +588,83 @@ def get_dollar_price():
         cursor.close()
         conn.close()
         return 1000000  # مقدار پیش‌فرض در صورت خطا
+    
+
+
+
+# استخراج اطلاعات مثل ادس وبسایت و ...
+
+
+import requests
+import json
+from typing import Dict, Optional
+
+def get_coin_data(coin_id: str) -> Optional[Dict]:
+    """
+    دریافت اطلاعات کامل یک کوین از CoinGecko
+    ورودی: coin_id مثل "bitcoin", "ethereum", "dogecoin"
+    خروجی: دیکشنری JSON تمیز یا None اگر کوین پیدا نشد
+    """
+    url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
+    
+    # پارامترها برای کاهش حجم پاسخ (فقط اطلاعات لازم)
+    params = {
+        'localization': 'false',
+        'tickers': 'false',
+        'market_data': 'false',
+        'community_data': 'false',
+        'developer_data': 'false',
+        'sparkline': 'false'
+    }
+    
+    headers = {
+        'Accept': 'application/json',
+        'User-Agent': 'CoinInfoBot/1.0'  # بعضی وقتا بدون این خطا میده
+    }
+    
+    try:
+        response = requests.get(url, params=params, headers=headers, timeout=10)
+        
+        if response.status_code == 200:
+            data = response.json()
+            
+            # استخراج فقط فیلدهای مهم و کاربردی
+            clean_data = {
+                "id": data.get("id"),
+                "symbol": data["symbol"].upper(),
+                "name": data["name"],
+                "website": data["links"].get("homepage", [None])[0],
+                "twitter": f"https://twitter.com/{data['links'].get('twitter_screen_name')}" 
+                          if data["links"].get("twitter_screen_name") else None,
+                "reddit": data["links"].get("subreddit_url"),
+                "whitepaper": data["links"].get("whitepaper"),
+                "block_explorers": data["links"].get("blockchain_site", [])[:5],  # ۵ تا اول
+                "description": data["description"].get("en", "")[:500] + "..." if data["description"].get("en") else None,
+                "genesis_date": data.get("genesis_date"),
+                "hashing_algorithm": data.get("hashing_algorithm"),
+                "categories": data.get("categories", []),
+                "image": {
+                    "small": data["image"].get("small"),
+                    "large": data["image"].get("large")
+                },
+                "market_cap_rank": data.get("market_cap_rank"),
+                "watchlist_users": data.get("watchlist_portfolio_users"),
+                "sentiment_positive": data.get("sentiment_votes_up_percentage"),
+                "last_updated": data.get("last_updated")
+            }
+            
+            return clean_data
+            
+        elif response.status_code == 404:
+            print(f"کوین '{coin_id}' پیدا نشد! ممکنه اسم اشتباه باشه.")
+            return None
+        else:
+            print(f"خطا در دریافت اطلاعات: {response.status_code}")
+            return None
+            
+    except requests.exceptions.RequestException as e:
+        print(f"خطای اتصال: {e}")
+        return None
+    except Exception as e:
+        print(f"خطای غیرمنتظره: {e}")
+        return None

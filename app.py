@@ -1,7 +1,7 @@
 import os
 # بالای فایل، بعد از importها این خط رو اضافه کن
 from flask import Flask, request, jsonify, Response, session, send_from_directory, render_template
-from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description, get_dollar_price
+from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description, get_dollar_price, get_coin_data
 import requests
 """ from utils import 
 from config import  """
@@ -199,6 +199,50 @@ def get_data_chart():
         print("خطا در get_data_chart:", e)
         return jsonify({"error": "خطای سرور"}), 500
         
+
+
+
+
+@app.route('/data_coin/<coin_id>', methods=['POST'])  # بهتره از string باشه نه int
+def data_coin(coin_id: str):
+    try:
+        print("loadCoinDataloadCoinDataloadCoinDataloadCoinDataloadCoinData")
+        # فرض می‌کنیم تابع get_coin_info(coin_id) از کد قبلی من رو داری
+        coin_data = get_coin_data(coin_id.lower())  # مثلاً "bitcoin" یا "pepe"
+
+        print(f"................{coin_data}.................")
+        if not coin_data:
+            return jsonify({"error": "کوین مورد نظر پیدا نشد یا خطا در دریافت اطلاعات"}), 404
+
+        # حالا coin_data یک دیکشنری تمیز هست (همون که توی کد قبلی ساختم)
+        result = {
+            "id": coin_data.get("id"),
+            "symbol": coin_data.get("symbol"),
+            "name": coin_data.get("name"),
+            "website": coin_data.get("website"),
+            "twitter": coin_data.get("twitter"),
+            "reddit": coin_data.get("reddit"),
+            "whitepaper": coin_data.get("whitepaper"),
+            "block_explorers": coin_data.get("block_explorers", []),
+            "genesis_date": coin_data.get("genesis_date"),
+            "hashing_algorithm": coin_data.get("hashing_algorithm"),
+            "categories": coin_data.get("categories", []),
+            "image_small": coin_data.get("image", {}).get("small"),   
+            "image_large": coin_data.get("image", {}).get("large"),    
+            "market_cap_rank": coin_data.get("market_cap_rank"),
+            "watchlist_users": coin_data.get("watchlist_users"),
+            "sentiment_positive": coin_data.get("sentiment_positive"),
+            "last_updated": coin_data.get("last_updated")
+        }
+
+        return jsonify(result), 200
+
+    except Exception as e:
+        print(f"خطا در اندپوینت /data_coin/{coin_id}: {e}")
+        return jsonify({"error": "خطای سرور داخلی"}), 500
+
+
+
 
 
 @app.route('/get_description/<coin>', methods=['GET'])

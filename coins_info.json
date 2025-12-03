@@ -1,0 +1,204 @@
+[
+    {
+        "id": "bitcoin",
+        "symbol": "BTC",
+        "name": "Bitcoin",
+        "website": "http://www.bitcoin.org",
+        "twitter": "https://twitter.com/bitcoin",
+        "reddit": "https://www.reddit.com/r/Bitcoin/",
+        "whitepaper": "https://bitcoin.org/bitcoin.pdf",
+        "block_explorers": [
+            "https://mempool.space/",
+            "https://platform.arkhamintelligence.com/explorer/token/bitcoin",
+            "https://blockchair.com/bitcoin/",
+            "https://btc.com/",
+            "https://btc.tokenview.io/"
+        ],
+        "description": "Bitcoin is the world's first decentralized cryptocurrency, created in 2009 by the pseudonymous Satoshi Nakamoto. It enables peer-to-peer electronic cash transactions without intermediaries like banks or governments, operating on a blockchain secured by Proof of Work mining and the SHA-256 cryptographic algorithm. \r\n\r\nWith a fixed supply cap of 21 million coins and programmatic halvings every four years that reduce miner rewards, Bitcoin is designed as a deflationary digital asset often called \"d...",
+        "genesis_date": "2009-01-03",
+        "hashing_algorithm": "SHA-256",
+        "categories": [
+            "Smart Contract Platform",
+            "Layer 1 (L1)",
+            "FTX Holdings",
+            "Proof of Work (PoW)",
+            "Bitcoin Ecosystem",
+            "GMCI 30 Index",
+            "GMCI Index",
+            "Coinbase 50 Index"
+        ],
+        "image": {
+            "small": "https://coin-images.coingecko.com/coins/images/1/small/bitcoin.png?1696501400",
+            "large": "https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png?1696501400"
+        },
+        "market_cap_rank": 1,
+        "watchlist_users": 2274036,
+        "sentiment_positive": 85.57,
+        "last_updated": "2025-12-03T14:16:22.970Z"
+    },
+    {
+        "id": "ethereum",
+        "symbol": "ETH",
+        "name": "Ethereum",
+        "website": "https://www.ethereum.org/",
+        "twitter": "https://twitter.com/ethereum",
+        "reddit": "https://www.reddit.com/r/ethereum",
+        "whitepaper": "",
+        "block_explorers": [
+            "https://etherscan.io/",
+            "https://platform.arkhamintelligence.com/explorer/token/ethereum",
+            "https://ethplorer.io/",
+            "https://blockchair.com/ethereum",
+            "https://www.oklink.com/eth"
+        ],
+        "description": "Ethereum is a global, open-source platform for decentralized applications. In other words, it is a decentralized blockchain platform that enables developers to build and deploy smart contracts and applications without central authority control. Unlike Bitcoin, which primarily functions as digital currency, Ethereum operates as a programmable global computer where developers can create any type of decentralized service. \r\n\r\nThe platform hosts over $14 billion in DeFi applications with hundreds of...",
+        "genesis_date": "2015-07-30",
+        "hashing_algorithm": "Ethash",
+        "categories": [
+            "Smart Contract Platform",
+            "Layer 1 (L1)",
+            "Ethereum Ecosystem",
+            "FTX Holdings",
+            "Multicoin Capital Portfolio",
+            "Proof of Stake (PoS)",
+            "Alameda Research Portfolio",
+            "Andreessen Horowitz (a16z) Portfolio",
+            "GMCI Layer 1 Index",
+            "GMCI 30 Index",
+            "Delphi Ventures Portfolio",
+            "Galaxy Digital Portfolio",
+            "GMCI Index",
+            "World Liberty Financial Portfolio",
+            "Coinbase 50 Index"
+        ],
+        "image": {
+            "small": "https://coin-images.coingecko.com/coins/images/279/small/ethereum.png?1696501628",
+            "large": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628"
+        },
+        "market_cap_rank": 2,
+        "watchlist_users": 1886243,
+        "sentiment_positive": 83.58,
+        "last_updated": "2025-12-03T14:15:55.316Z"
+    },
+    {
+        "id": "solana",
+        "symbol": "SOL",
+        "name": "Solana",
+        "website": "https://solana.com/",
+        "twitter": null,
+        "reddit": "https://www.reddit.com/r/solana",
+        "whitepaper": "",
+        "block_explorers": [
+            "https://solscan.io/",
+            "https://platform.arkhamintelligence.com/explorer/token/solana",
+            "https://xray.helius.xyz/",
+            "https://solana.fm/",
+            "https://solanabeach.io/"
+        ],
+        "description": "Solana is a highly functional open source project that banks on blockchain technology’s permissionless nature to provide decentralized finance (DeFi) solutions. It is a layer 1 network that offers fast speeds and affordable costs. While the idea and initial work on the project began in 2017, Solana was officially launched in March 2020 by the Solana Foundation with headquarters in Geneva, Switzerland....",
+        "genesis_date": null,
+        "hashing_algorithm": null,
+        "categories": [
+            "Smart Contract Platform",
+            "Solana Ecosystem",
+            "Layer 1 (L1)",
+            "Alleged SEC Securities",
+            "FTX Holdings",
+            "Multicoin Capital Portfolio",
+            "Proof of Stake (PoS)",
+            "Alameda Research Portfolio",
+            "Andreessen Horowitz (a16z) Portfolio",
+            "GMCI Layer 1 Index",
+            "GMCI 30 Index",
+            "Delphi Ventures Portfolio",
+            "GMCI Index",
+            "Polychain Capital Portfolio",
+            "Made in USA",
+            "Coinbase 50 Index"
+        ],
+        "image": {
+            "small": "https://coin-images.coingecko.com/coins/images/4128/small/solana.png?1718769756",
+            "large": "https://coin-images.coingecko.com/coins/images/4128/large/solana.png?1718769756"
+        },
+        "market_cap_rank": 6,
+        "watchlist_users": 1241309,
+        "sentiment_positive": 80.81,
+        "last_updated": "2025-12-03T14:16:12.472Z"
+    },
+    {
+        "id": "pepe",
+        "symbol": "PEPE",
+        "name": "Pepe",
+        "website": "https://www.pepe.vip/",
+        "twitter": "https://twitter.com/pepecoineth",
+        "reddit": null,
+        "whitepaper": "",
+        "block_explorers": [
+            "https://etherscan.io/token/0x6982508145454ce325ddbe47a25d4ec3d2311933",
+            "https://intel.arkm.com/explorer/token/pepe ",
+            "https://ethplorer.io/address/0x6982508145454ce325ddbe47a25d4ec3d2311933",
+            "https://bscscan.com/token/0x25d887ce7a35172c62febfd67a1856f20faebb00",
+            "https://arbiscan.io/token/0x25d887ce7a35172c62febfd67a1856f20faebb00"
+        ],
+        "description": "What is the project about?\r\nPepe is a community based meme token surround the iconic meme Pepe the frog. Pepe aims to leverage the power of such an iconic meme to become the most memeable memecoin in existence. \r\n\r\nWhat makes your project unique?\r\nPepe is here to make memecoins great again. Ushering in a new paradigm for memecoins, Pepe represents the memecoin in it's purest simplicity. With zero taxes, liquidity locked forever, and contract immutable, Pepe is for the people, forever. Pepe is ab...",
+        "genesis_date": null,
+        "hashing_algorithm": null,
+        "categories": [
+            "BNB Chain Ecosystem",
+            "Avalanche Ecosystem",
+            "Meme",
+            "Arbitrum Ecosystem",
+            "Ethereum Ecosystem",
+            "Frog-Themed",
+            "GMCI Meme Index",
+            "GMCI Index",
+            "The Boy’s Club",
+            "4chan-Themed"
+        ],
+        "image": {
+            "small": "https://coin-images.coingecko.com/coins/images/29850/small/pepe-token.jpeg?1696528776",
+            "large": "https://coin-images.coingecko.com/coins/images/29850/large/pepe-token.jpeg?1696528776"
+        },
+        "market_cap_rank": 62,
+        "watchlist_users": 380155,
+        "sentiment_positive": 85.71,
+        "last_updated": "2025-12-03T14:16:22.795Z"
+    },
+    {
+        "id": "shiba-inu",
+        "symbol": "SHIB",
+        "name": "Shiba Inu",
+        "website": "https://shibatoken.com/",
+        "twitter": "https://twitter.com/shibarium_",
+        "reddit": "https://www.reddit.com/r/SHIBArmy/",
+        "whitepaper": "",
+        "block_explorers": [
+            "https://etherscan.io/token/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+            "https://intel.arkm.com/explorer/token/shiba-inu",
+            "https://ethplorer.io/address/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+            "https://explorer.energi.network/token/0x7fdb933327aa6989ae706001c2ea54ba5e046e79",
+            "https://ethereum.dex.guru/token/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+        ],
+        "description": "Shiba Inu (SHIB) is a meme token which began as a fun currency and has now transformed into a decentralized ecosystem. During the initial launch, 50% of the supply was allocated into Vitalik Buterin's ethereum wallet. \r\n\r\nAs a result of that, Vitalik proceeded to donate 10% of his SHIB holdings to a COVID-19 relief effort in India and the remaining 40% is burnt forever. That donation was worth about $1 billion at that time, which makes it one of the largest donation ever in the world.\r\n\r\nWhat is...",
+        "genesis_date": null,
+        "hashing_algorithm": null,
+        "categories": [
+            "Meme",
+            "Ethereum Ecosystem",
+            "Animoca Brands Portfolio",
+            "Dog-Themed",
+            "GMCI Meme Index",
+            "GMCI 30 Index",
+            "GMCI Index",
+            "Coinbase 50 Index"
+        ],
+        "image": {
+            "small": "https://coin-images.coingecko.com/coins/images/11939/small/shiba.png?1696511800",
+            "large": "https://coin-images.coingecko.com/coins/images/11939/large/shiba.png?1696511800"
+        },
+        "market_cap_rank": 34,
+        "watchlist_users": 805764,
+        "sentiment_positive": 87.27,
+        "last_updated": "2025-12-03T14:16:24.289Z"
+    }
+]

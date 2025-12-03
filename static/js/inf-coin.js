@@ -96,18 +96,14 @@ async function loadCoinDetail() {
                 <div class="direction-inf-coin"><strong>حداکثر عرضه:</strong><p> ${coin.msupply ? Number(coin.msupply).toLocaleString() : 'نامحدود'}</p></div>
             </div>
             
-            <!-- ارزش بازار به دلار و تومان -->
             <div class="direction-inf-coin">
                 <strong>ارزش بازار:</strong>
                 <p>$${Number(coin.market_cap_usd || 0).toLocaleString()}</p>
-                <small>(${formatNumberPersian(Math.round(marketCapToman))} تومان)</small>
             </div>
             
-            <!-- حجم معاملات به دلار و تومان -->
             <div class="direction-inf-coin">
                 <strong>حجم معاملات ۲۴ ساعت:</strong>
                 <p>$${Number(coin.volume24 || 0).toLocaleString()}</p>
-                <small>(${formatNumberPersian(Math.round(volume24Toman))} تومان)</small>
             </div>
         `;
 

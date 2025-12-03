@@ -410,3 +410,232 @@ def create_coin_votes_table():
 
 
  """
+
+
+
+
+
+
+
+# گرفتن و ذهیره قیمت دلار در دیتابیس
+
+import requests
+import pymysql
+from datetime import datetime, timedelta
+from typing import Optional, Dict, Any
+import urllib3
+
+# غیرفعال کردن هشدار SSL
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+# تنظیمات دیتابیس
+config = {
+    'host': 'localhost',
+    'user': 'pythonuser',
+    'password': '135101220',
+    'database': 'comments_db',
+    'charset': 'utf8mb4',
+    'autocommit': True,
+    'collation': 'utf8mb4_unicode_ci'
+}
+
+def create_dollar_price_table():
+    """ایجاد یا بازسازی جدول قیمت دلار در دیتابیس"""
+    try:
+        connection = pymysql.connect(**config)
+        cursor = connection.cursor()
+        
+        # حذف جدول قدیمی اگر وجود داشته باشد
+        cursor.execute("DROP TABLE IF EXISTS dollar_price")
+        
+        # ایجاد جدول جدید با ساختار صحیح
+        create_table_query = """
+        CREATE TABLE dollar_price (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            price DECIMAL(15, 2) NOT NULL,
+            updated_at DATETIME NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_updated_at (updated_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        """
+        
+        cursor.execute(create_table_query)
+        connection.commit()
+        print("✅ جدول dollar_price با موفقیت ایجاد شد")
+        
+        cursor.close()
+        connection.close()
+        return True
+    except Exception as e:
+        print(f"❌ خطا در ایجاد جدول: {e}")
+        return False
+
+
+def fetch_dollar_from_api() -> Optional[float]:
+    """دریافت قیمت دلار از API"""
+    api_url = "https://BrsApi.ir/Api/Market/Gold_Currency.php?key=BiBGHxT8bMUyNQFYcZqIKbjiFhGWpKPk"
+    
+    try:
+        # استفاده از verify=False برای رفع مشکل SSL
+        response = requests.get(api_url, timeout=10, verify=False)
+        response.raise_for_status()
+        data = response.json()
+        
+        print(f"📡 Response از API: {data}")
+        
+        # استخراج قیمت دلار از response
+        if isinstance(data, dict):
+            # حالت‌های مختلف ساختار API
+            dollar_price = None
+            
+            # حالت 1: کلید مستقیم
+            for key in ['dollar', 'usd', 'USD', 'price', 'Dollar']:
+                if key in data:
+                    dollar_price = data[key]
+                    break
+            
+            # حالت 2: داخل data
+            if not dollar_price and 'data' in data:
+                data_obj = data['data']
+                if isinstance(data_obj, dict):
+                    for key in ['dollar', 'usd', 'USD', 'price']:
+                        if key in data_obj:
+                            dollar_price = data_obj[key]
+                            break
+            
+            # حالت 3: داخل آرایه
+            if not dollar_price and isinstance(data, list) and len(data) > 0:
+                dollar_price = data[0].get('price') or data[0].get('dollar')
+            
+            # تبدیل به عدد
+            if dollar_price:
+                # اگر string بود، کاما و فاصله رو حذف کن
+                if isinstance(dollar_price, str):
+                    dollar_price = dollar_price.replace(',', '').replace(' ', '')
+                return float(dollar_price)
+        
+        # اگر لیست بود
+        elif isinstance(data, list) and len(data) > 0:
+            first_item = data[0]
+            if isinstance(first_item, dict):
+                dollar_price = first_item.get('price') or first_item.get('dollar')
+                if dollar_price:
+                    return float(dollar_price)
+        
+        print(f"⚠️ نتونستم قیمت دلار رو از response استخراج کنم")
+        return None
+        
+    except requests.exceptions.SSLError as e:
+        print(f"❌ خطای SSL: {e}")
+        print("💡 در حال تلاش مجدد بدون verify...")
+        return None
+    except requests.RequestException as e:
+        print(f"❌ خطا در دریافت از API: {e}")
+        return None
+    except (ValueError, KeyError, TypeError) as e:
+        print(f"❌ خطا در پردازش داده: {e}")
+        return None
+
+
+def get_latest_dollar_from_db() -> Optional[Dict[str, Any]]:
+    """دریافت آخرین قیمت دلار از دیتابیس"""
+    try:
+        connection = pymysql.connect(**config)
+        cursor = connection.cursor(pymysql.cursors.DictCursor)
+        
+        query = """
+        SELECT price, updated_at 
+        FROM dollar_price 
+        ORDER BY updated_at DESC 
+        LIMIT 1
+        """
+        
+        cursor.execute(query)
+        result = cursor.fetchone()
+        
+        cursor.close()
+        connection.close()
+        
+        return result
+        
+    except pymysql.Error as e:
+        if e.args[0] == 1146:  # جدول وجود نداره
+            print("⚠️ جدول dollar_price وجود نداره، در حال ایجاد...")
+            create_dollar_price_table()
+            return None
+        print(f"❌ خطا در خواندن از دیتابیس: {e}")
+        return None
+
+
+def save_dollar_to_db(price: float) -> bool:
+    """ذخیره یا به‌روزرسانی قیمت دلار در دیتابیس"""
+    try:
+        connection = pymysql.connect(**config)
+        cursor = connection.cursor()
+        
+        # حذف رکوردهای قبلی (نگهداری فقط آخرین قیمت)
+        cursor.execute("DELETE FROM dollar_price")
+        
+        # درج قیمت جدید
+        insert_query = """
+        INSERT INTO dollar_price (price, updated_at) 
+        VALUES (%s, %s)
+        """
+        
+        cursor.execute(insert_query, (price, datetime.now()))
+        connection.commit()
+        
+        cursor.close()
+        connection.close()
+        
+        print(f"✅ قیمت دلار ({price:,.0f} ریال) در دیتابیس ذخیره شد")
+        return True
+        
+    except Exception as e:
+        print(f"❌ خطا در ذخیره در دیتابیس: {e}")
+        return False
+
+
+def get_dollar_price() -> float:
+    """
+    تابع اصلی دریافت قیمت دلار با لوجیک کش ۱۰ دقیقه‌ای
+    
+    Returns:
+        float: قیمت دلار به ریال
+    """
+    # دریافت آخرین قیمت از دیتابیس
+    latest_record = get_latest_dollar_from_db()
+    
+    # اگر رکوردی وجود ندارد
+    if not latest_record:
+        print("ℹ️ قیمتی در دیتابیس وجود ندارد، دریافت از API...")
+        new_price = fetch_dollar_from_api()
+        
+        if new_price:
+            save_dollar_to_db(new_price)
+            return new_price
+        else:
+            print("⚠️ خطا در دریافت از API، استفاده از مقدار پیش‌فرض (70,000)")
+            # مقدار پیش‌فرض تقریبی
+            return 70000.0
+    
+    # بررسی زمان آخرین به‌روزرسانی
+    last_update = latest_record['updated_at']
+    time_difference = datetime.now() - last_update
+    
+    # اگر بیش از ۱۰ دقیقه گذشته باشد
+    if time_difference > timedelta(minutes=10):
+        print(f"ℹ️ قیمت قدیمی است ({time_difference}), دریافت قیمت جدید از API...")
+        new_price = fetch_dollar_from_api()
+        
+        if new_price:
+            save_dollar_to_db(new_price)
+            return new_price
+        else:
+            print("⚠️ خطا در دریافت از API، استفاده از قیمت کش شده")
+            return float(latest_record['price'])
+    
+    # اگر کمتر از ۱۰ دقیقه باشد، استفاده از کش
+    minutes_ago = int(time_difference.total_seconds() / 60)
+    print(f"✅ استفاده از قیمت کش شده ({minutes_ago} دقیقه پیش)")
+    return float(latest_record['price'])

@@ -1,7 +1,7 @@
 import os
 # بالای فایل، بعد از importها این خط رو اضافه کن
 from flask import Flask, request, jsonify, Response, session, send_from_directory, render_template
-from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description
+from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description, get_dollar_price
 import requests
 """ from utils import 
 from config import  """
@@ -107,6 +107,7 @@ def crypto_market():
     
     
 
+
 @app.route('/inf_coin/<int:coinID>', methods=['POST', 'GET'])
 def inf_coin(coinID):
     try:
@@ -114,35 +115,28 @@ def inf_coin(coinID):
         resp = requests.get(f'https://api.coinlore.net/api/ticker/?id={coinID}', timeout=15)
         resp.raise_for_status()
         data = resp.json()
+        
         if not data:
             return jsonify([]), 404
         
         coin = data[0]
         
-        # دریافت قیمت دلار به تومان
-        # می‌تونی از APIهای مختلف استفاده کنی، مثلاً:
+        # دریافت قیمت دلار به ریال (با کش ۱۰ دقیقه‌ای)
         try:
-            usd_to_irr_resp = requests.get('https://api.exchangerate.host/latest?base=USD&symbols=IRR', timeout=10)
-            # یا از API داخلی مثل:
-            # usd_to_irr_resp = requests.get('https://api.navasan.tech/latest/?item=usd-irr', timeout=10)
-            
-            usd_to_irr_data = usd_to_irr_resp.json()
-            # بسته به API که استفاده می‌کنی، ساختار response فرق می‌کنه
-            usd_to_irr = usd_to_irr_data.get('rates', {}).get('IRR', 0)
+            usd_to_irr = get_dollar_price()
             
             # محاسبه قیمت تومان (تومان = ریال / 10)
             price_irr = float(coin.get("price_usd", 0)) * usd_to_irr
             price_toman = price_irr / 10
-        except:
-            # اگر API قیمت تومان کار نکرد، مقدار پیش‌فرض
+            
+            print(f"💵 نرخ دلار: {usd_to_irr:,.0f} ریال")
+            print(f"💰 قیمت {coin.get('symbol')}: {price_toman:,.0f} تومان")
+            
+        except Exception as e:
+            print(f"❌ خطا در دریافت قیمت دلار: {e}")
             usd_to_irr = 0
             price_toman = 0
         
-
-        print(".....")
-        print(usd_to_irr)
-        print(price_toman)
-        print(".....")
         result = [{
             "id": coin.get("id"),
             "symbol": coin.get("symbol"),
@@ -150,8 +144,8 @@ def inf_coin(coinID):
             "nameid": coin.get("nameid"),
             "rank": coin.get("rank"),
             "price_usd": coin.get("price_usd"),
-            "price_toman": price_toman,  # قیمت تومان اضافه شد
-            "usd_to_irr_rate": usd_to_irr,  # نرخ تبدیل برای استفاده در frontend
+            "price_toman": price_toman,
+            "usd_to_irr_rate": usd_to_irr,
             "percent_change_24h": coin.get("percent_change_24h"),
             "percent_change_1h": coin.get("percent_change_1h"),
             "percent_change_7d": coin.get("percent_change_7d"),
@@ -163,10 +157,12 @@ def inf_coin(coinID):
             "tsupply": coin.get("tsupply"),
             "msupply": coin.get("msupply")
         }]
+        
         return jsonify(result)
+        
     except Exception as e:
-        print("خطا در inf_coin:", e)
-        return jsonify([]), 500
+        print(f"❌ خطا در inf_coin: {e}")
+        return jsonify([]), 500    
 
 
 @app.route('/get_data_chart', methods=['POST'])
@@ -215,7 +211,6 @@ def get_description(coin):
     try:
         description = get_persian_description(coin.upper())  # یا هر فرمت کوینی که داری
 
-        print(description)
         # اگر توضیحی وجود نداشت یا خالی بود
         if not description or description.strip() == "":
             return jsonify({

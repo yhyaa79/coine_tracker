@@ -48,7 +48,7 @@
                         <option value="toman">تومان</option>
                     </select>
 
-                    <textarea id="inDollarToman"></textarea>
+                    <textarea id="inDollarToman" placeholder="دلار/تومان"></textarea>
 
                     <div style="margin: 10px auto 5px auto;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -58,7 +58,7 @@
                         </svg>
                     </div>
 
-                    <textarea id="inCoin"></textarea>
+                    <textarea id="inCoin" placeholder="کوین"></textarea>
                 </div>
             </div>
 
@@ -132,19 +132,19 @@
             <div class="comment-detail">
                 <div class="survey" id="surveyCoin">
                     <p>احساس جامعه نسبت به <span id="coinName"></span></p>
-
-                    <div class="sentiment-bar-container">
-                        <div class="sentiment-bar">
-                            <div class="bullish-fill" id="bullishFill"></div>
-                            <div class="bearish-fill" id="bearishFill"></div>
+                    <div>
+                        <span id="bullishCount">0</span>
+                        <span id="bearishCount">0</span>
+                        <div class="sentiment-bar-container">
+                            <div class="sentiment-bar">
+                                <div class="bullish-fill" id="bullishFill"></div>
+                                <div class="bearish-fill" id="bearishFill"></div>
+                            </div>
                         </div>
                     </div>
-
                     <div class="sentiment-stats">
-                        <span id="bullishCount">0</span> صعودی
-                        •
-                        <span id="bearishCount">0</span> نزولی
-                        • مجموع: <span id="totalVotes">0</span>
+            
+                        مجموع: <span id="totalVotes">0</span>
                     </div>
 
                     <div class="vote-buttons">

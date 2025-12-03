@@ -107,7 +107,6 @@ def crypto_market():
     
     
 
-
 @app.route('/inf_coin/<int:coinID>', methods=['POST', 'GET'])
 def inf_coin(coinID):
     try:
@@ -115,37 +114,33 @@ def inf_coin(coinID):
         resp = requests.get(f'https://api.coinlore.net/api/ticker/?id={coinID}', timeout=15)
         resp.raise_for_status()
         data = resp.json()
-        
         if not data:
             return jsonify([]), 404
         
         coin = data[0]
         
-        # دریافت قیمت دلار به ریال (با کش ۱۰ دقیقه‌ای)
-        try:
-            usd_to_irr = get_dollar_price()
-            
-            # محاسبه قیمت تومان (تومان = ریال / 10)
-            price_irr = float(coin.get("price_usd", 0)) * usd_to_irr
-            price_toman = price_irr / 10
-            
-            print(f"💵 نرخ دلار: {usd_to_irr:,.0f} ریال")
-            print(f"💰 قیمت {coin.get('symbol')}: {price_toman:,.0f} تومان")
-            
-        except Exception as e:
-            print(f"❌ خطا در دریافت قیمت دلار: {e}")
-            usd_to_irr = 0
-            price_toman = 0
+        # دریافت قیمت دلار به ریال (از تابع خودمان)
+        usd_to_irr = get_dollar_price()   # این یک عدد (مثلاً 620000) برمی‌گردونه
         
+        # اگر به هر دلیلی 0 یا خیلی کم بود، fallback
+        if usd_to_irr < 10000:
+            usd_to_irr = 620000  # مقدار پیش‌فرض موقت
+
+        print(f".......{usd_to_irr}......")
+        # محاسبه قیمت به تومان
+        price_usd = float(coin.get("price_usd", 0))
+        price_irr = price_usd * usd_to_irr
+        price_toman = price_irr / 10  # چون تومان = ریال / 10
+
         result = [{
             "id": coin.get("id"),
             "symbol": coin.get("symbol"),
             "name": coin.get("name"),
             "nameid": coin.get("nameid"),
             "rank": coin.get("rank"),
-            "price_usd": coin.get("price_usd"),
-            "price_toman": price_toman,
-            "usd_to_irr_rate": usd_to_irr,
+            "price_usd": price_usd,
+            "price_toman": round(price_toman, 2),           # گرد کردن به ۲ رقم اعشار
+            "usd_to_irr_rate": usd_to_irr,                  # نرخ دلار به ریال
             "percent_change_24h": coin.get("percent_change_24h"),
             "percent_change_1h": coin.get("percent_change_1h"),
             "percent_change_7d": coin.get("percent_change_7d"),
@@ -157,12 +152,12 @@ def inf_coin(coinID):
             "tsupply": coin.get("tsupply"),
             "msupply": coin.get("msupply")
         }]
-        
         return jsonify(result)
-        
+
     except Exception as e:
-        print(f"❌ خطا در inf_coin: {e}")
-        return jsonify([]), 500    
+        print("خطا در inf_coin:", e)
+        return jsonify({"error": "دریافت اطلاعات با مشکل مواجه شد"}), 500
+    
 
 
 @app.route('/get_data_chart', methods=['POST'])

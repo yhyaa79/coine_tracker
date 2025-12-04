@@ -23,8 +23,9 @@ async function loadCoinData() {
         }
 
         // تصویر بزرگ رو انتخاب کن
-        const imageUrl = coin.image?.large || coin.image?.small || '';
-
+        const imageUrl = coin.image_large;
+        window.imageUrl = imageUrl
+        
         // تاریخ آخرین بروزرسانی به شمسی
         const lastUpdated = coin.last_updated 
             ? new Date(coin.last_updated).toLocaleString('fa-IR')
@@ -34,6 +35,7 @@ async function loadCoinData() {
         document.getElementById('showDataCoin').innerHTML = `
             <div class="coin-container">
 
+            
                 <!-- لینک‌ها -->
                 <div class="coin-links">
                     ${coin.website ? `

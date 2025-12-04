@@ -59,9 +59,7 @@ async function loadCoinDetail() {
         // ساخت HTML جزئیات
         document.querySelector('.coin-detail-container').innerHTML = `
             <div class="coin-header">
-                <img src="/static/image/${coin.name.toLowerCase()}.webp" 
-                     onerror="this.src='/static/image/fallback.png'" 
-                     alt="${coin.name}">
+                <img src="${imageUrl}" alt="${coin.name}">
                 <div>
                     <h3>${coin.name} <small>(${coin.symbol.toUpperCase()})</small></h3>
                 </div>

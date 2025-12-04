@@ -706,3 +706,94 @@ span {
     padding: 2% 4%;
     margin-top: 20px;
 }
+
+
+
+.coin-container {
+    line-height: 1.85;
+    /* font-size: 15px; */
+    color: #bdbdbd;
+    /* direction: rtl; */
+    /* text-align: justify; */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.05);
+    display: grid;
+    width: 92%;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 2% 4%;
+    margin-top: 20px;
+}
+
+.coin-links {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    display: flow;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 2% 4%;
+    margin-top: 10px;
+}
+
+
+.link-website,
+.link-twitter,
+.link-reddit,
+.link-whitepaper {
+    color: #bdbdbd;
+    margin: 10px
+}
+
+
+
+.coin-explorers {
+    background: rgba(255, 255, 255, 0.05);
+    display: flow;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 2% 4%;
+    margin-top: 10px;
+}
+
+.link-explorer {
+color: #bdbdbd;
+    text-align: left;
+    display: flow;
+}
+
+
+.coin-categories {
+    background: rgba(255, 255, 255, 0.05);
+    display: flow;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 2% 4%;
+    margin-top: 10px;
+}
+
+.category-tag {
+    margin: 0 10px;
+}
+
+.coin-info-grid {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 2% 4%;
+    margin: 10px 0;
+    gap: 0 10px;
+}
+
+
+.label-p {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    display: grid;
+    width: 92%;
+    border: 1px solid #575757;
+    border-radius: 8px;
+    padding: 2% 1%;
+    margin-top: 10px;
+}

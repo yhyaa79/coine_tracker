@@ -206,7 +206,6 @@ def get_data_chart():
 @app.route('/data_coin/<coin_id>', methods=['POST'])  # بهتره از string باشه نه int
 def data_coin(coin_id: str):
     try:
-        print("loadCoinDataloadCoinDataloadCoinDataloadCoinDataloadCoinData")
         # فرض می‌کنیم تابع get_coin_info(coin_id) از کد قبلی من رو داری
         coin_data = get_coin_data(coin_id.lower())  # مثلاً "bitcoin" یا "pepe"
 

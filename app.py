@@ -158,6 +158,7 @@ def inf_coin(coinID):
     
 
 
+
 @app.route('/get_data_chart', methods=['POST'])
 def get_data_chart():
     try:
@@ -166,11 +167,11 @@ def get_data_chart():
 
         PERIOD_CONFIG = {
             "1":   (1,   "5m"),   # ۱ روز → هر ۵ دقیقه (بهترین رزولوشن برای ۲۴ ساعت)
-            "7":   (7,   "1h"),   # ۷ روز → ساعتی
-            "30":  (30,  "4h"),   # ۳۰ روز → هر ۴ ساعت (جزئیات عالی)
-            "60":  (60,  "1d"),   # ۶۰ روز → روزانه
-            "120": (120, "1d"),   # ۱۲۰ روز → روزانه
-            "all": (5000, "1d"),  # همه → روزانه
+            "7":   (7,   "30m"),   # ۷ روز → ساعتی
+            "30":  (30,  "2h"),   # ۳۰ روز → هر ۴ ساعت (جزئیات عالی)
+            "60":  (60,  "8h"),   # ۶۰ روز → روزانه
+            "120": (120, "12h"),   # ۱۲۰ روز → روزانه
+            "all": (5000, "3d"),  # همه → روزانه
         }
 
         if period not in PERIOD_CONFIG:
@@ -195,7 +196,7 @@ def get_data_chart():
 
     except Exception as e:
         print("خطا در get_data_chart:", e)
-        return jsonify({"error": "خطای سرور"}), 500        
+        return jsonify({"error": "خطای سرور"}), 500
 
 
 

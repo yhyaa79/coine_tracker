@@ -677,7 +677,7 @@ span {
     border: 1px solid #575757;
     border-radius: 8px;
     padding: 6px 3%;
-    margin: 0 1%;
+    margin: 5px 1%;
     width: 65px;
     margin-bottom: 20px;
 }
@@ -769,7 +769,7 @@ span {
 }
 
 .link-explorer {
-color: #bdbdbd;
+    color: #bdbdbd;
     text-align: left;
     display: flow;
 }
@@ -810,5 +810,3 @@ color: #bdbdbd;
     padding: 2% 1%;
     margin-top: 10px;
 }
-
-

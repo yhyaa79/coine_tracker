@@ -13,6 +13,10 @@ import pandas as pd
 import requests
 from typing import Optional, Literal
 
+import pandas as pd
+import requests
+from typing import Optional, Literal
+
 def get_crypto_chart_binance(
     symbol: str = "BTCUSDT",
     interval: Literal["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"] = "1d",
@@ -82,13 +86,19 @@ def get_crypto_chart_binance(
         df = df[["open_time", "open", "high", "low", "close", "volume"]]
         df[["open", "high", "low", "close", "volume"]] = df[["open", "high", "low", "close", "volume"]].astype(float)
 
-        # تبدیل زمان به datetime (بدون timezone برای فرمت ساده)
-        df["datetime"] = pd.to_datetime(df["open_time"], unit='ms', utc=True).dt.tz_convert(None)
+        # تبدیل زمان به datetime با timezone ایران
+        df["datetime"] = pd.to_datetime(df["open_time"], unit='ms', utc=True).dt.tz_convert('Asia/Tehran')
+        
+        # حذف timezone info برای سادگی (اما زمان ایران حفظ می‌شود)
+        df["datetime"] = df["datetime"].dt.tz_localize(None)
+        
         df = df.set_index("datetime")[["open", "high", "low", "close", "volume"]]
 
         # برش دقیق داده‌ها فقط برای دوره درخواستی (غیر از all time)
         if not is_all_time:
-            cutoff = now.tz_convert(None) - pd.Timedelta(days=days)
+            # تبدیل now به زمان ایران برای مقایسه صحیح
+            now_iran = now.tz_convert('Asia/Tehran').tz_localize(None)
+            cutoff = now_iran - pd.Timedelta(days=days)
             df = df[df.index >= cutoff]
 
         # گرد کردن اعداد
@@ -103,6 +113,7 @@ def get_crypto_chart_binance(
     except Exception as e:
         print(f"خطای غیرمنتظره در get_crypto_chart_binance: {e}")
         return None
+    
 
 #### mySQL ####
 

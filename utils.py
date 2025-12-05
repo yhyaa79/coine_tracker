@@ -2,40 +2,56 @@ import requests
 import pandas as pd
 from typing import Literal, Optional
 
+import mysql.connector
+import requests
+from datetime import datetime, timedelta
+import time
+
+
+
+import pandas as pd
+import requests
+from typing import Optional, Literal
+
 def get_crypto_chart_binance(
     symbol: str = "BTCUSDT",
-    interval: Literal["1m", "5m", "15m", "1h", "4h", "1d"] = "1d",
+    interval: Literal["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"] = "1d",
     days: int = 30,
     limit: int = 1000
 ) -> Optional[pd.DataFrame]:
+
+    # تبدیل نام کوین‌گکو به سمبل بایننس
     COINGECKO_TO_BINANCE = {
         "bitcoin": "BTCUSDT", "ethereum": "ETHUSDT", "solana": "SOLUSDT",
         "cardano": "ADAUSDT", "ripple": "XRPUSDT", "dogecoin": "DOGEUSDT",
         "binancecoin": "BNBUSDT", "shiba-inu": "SHIBUSDT", "avalanche-2": "AVAXUSDT",
         "polkadot": "DOTUSDT", "matic-network": "MATICUSDT", "tron": "TRXUSDT",
         "litecoin": "LTCUSDT", "chainlink": "LINKUSDT", "toncoin": "TONUSDT",
+        "pepe": "PEPEUSDT", "bonk": "BONKUSDT", "near": "NEARUSDT",
+        # در صورت نیاز بقیه رو اضافه کن
     }
 
     original_symbol = symbol
-    symbol = COINGECKO_TO_BINANCE.get(symbol.lower(), original_symbol.upper() + "USDT")
+    symbol = COINGECKO_TO_BINANCE.get(symbol.lower(), symbol.upper() + "USDT")
 
     url = "https://api.binance.com/api/v3/klines"
     now = pd.Timestamp.now(tz='UTC')
 
-    # تشخیص All Time
+    # تشخیص حالت All Time
     is_all_time = days >= 1000
 
     if is_all_time:
-        # بایننس از سال ۲۰۱۷ شروع شده، پس از ۲۰۱۷-۰۷-۱۷ شروع کن
         start_time = int(pd.Timestamp("2017-07-17", tz='UTC').timestamp() * 1000)
     else:
-        # برای دوره‌های کوتاه (1h): دقیق باشه، حاشیه نده
-        # برای دوره‌های روزانه: کمی حاشیه بده تا داده کامل باشه
-        if interval == "1h":
-            # فقط دقیقاً days روز قبل
+        # تنظیم دقیق start_time بر اساس interval
+        if interval in ["1m", "3m", "5m", "15m", "30m"]:
+            # برای تایم‌فریم‌های کوتاه: دقیقاً از days روز قبل
             start_time = int((now - pd.Timedelta(days=days)).timestamp() * 1000)
-        else:
-            # برای روزانه: ۱۰ روز حاشیه برای اطمینان از کامل بودن داده
+        elif interval in ["1h", "2h", "4h", "6h", "8h", "12h"]:
+            # برای ساعتی: کمی حاشیه (۲ روز) برای کامل بودن داده
+            start_time = int((now - pd.Timedelta(days=days + 2)).timestamp() * 1000)
+        else:  # 1d, 3d, 1w, ...
+            # برای روزانه: حاشیه بیشتر
             start_time = int((now - pd.Timedelta(days=days + 10)).timestamp() * 1000)
 
     end_time = int(now.timestamp() * 1000)
@@ -45,18 +61,16 @@ def get_crypto_chart_binance(
         "interval": interval,
         "startTime": start_time,
         "endTime": end_time,
-        "limit": 1000
+        "limit": limit
     }
-
-    print(f"درخواست Binance: {symbol} | {interval} | {days} روز → از {pd.Timestamp(start_time, unit='ms', tz='UTC').date()}")
 
     try:
         response = requests.get(url, params=params, timeout=15)
         response.raise_for_status()
         data = response.json()
 
-        if not data or isinstance(data, dict) and "code" in data:
-            print(f"خطا یا داده خالی از بایننس: {data}")
+        if not data or (isinstance(data, dict) and "code" in data):
+            print(f"خطا از بایننس برای {symbol}: {data}")
             return None
 
         df = pd.DataFrame(data, columns=[
@@ -64,27 +78,30 @@ def get_crypto_chart_binance(
             "close_time", "quote_volume", "trades", "taker_buy_base", "taker_buy_quote", "ignore"
         ])
 
+        # فقط ستون‌های مورد نیاز
         df = df[["open_time", "open", "high", "low", "close", "volume"]]
         df[["open", "high", "low", "close", "volume"]] = df[["open", "high", "low", "close", "volume"]].astype(float)
+
+        # تبدیل زمان به datetime (بدون timezone برای فرمت ساده)
         df["datetime"] = pd.to_datetime(df["open_time"], unit='ms', utc=True).dt.tz_convert(None)
         df = df.set_index("datetime")[["open", "high", "low", "close", "volume"]]
 
+        # برش دقیق داده‌ها فقط برای دوره درخواستی (غیر از all time)
         if not is_all_time:
-            # محاسبه دقیق زمان شروع دوره (مثلاً دقیقاً ۱ روز قبل)
-            cutoff = (pd.Timestamp.utcnow() - pd.Timedelta(days=days)).replace(tzinfo=None)
+            cutoff = now.tz_convert(None) - pd.Timedelta(days=days)
             df = df[df.index >= cutoff]
-
 
         # گرد کردن اعداد
         df[["open", "high", "low", "close"]] = df[["open", "high", "low", "close"]].round(8)
         df["volume"] = df["volume"].round(2)
 
-        print(f"موفق: {len(df)} کندل {interval} برای {symbol} (دوره: {days} روز)")
-
         return df if not df.empty else None
 
+    except requests.exceptions.RequestException as e:
+        print(f"خطای شبکه در دریافت داده از بایننس ({symbol}): {e}")
+        return None
     except Exception as e:
-        print(f"خطا در دریافت داده از بایننس: {e}")
+        print(f"خطای غیرمنتظره در get_crypto_chart_binance: {e}")
         return None
 
 #### mySQL ####
@@ -111,7 +128,6 @@ def create_database_and_table():
         cursor = connection.cursor()
 
         cursor.execute("CREATE DATABASE IF NOT EXISTS comments_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
-        print("✓ دیتابیس comments_db آماده است")
 
         cursor.execute("USE comments_db")
 
@@ -127,7 +143,6 @@ def create_database_and_table():
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
         """
         cursor.execute(create_table_query)
-        print("✓ جدول comments (مشترک برای همه کوین‌ها) ساخته شد")
 
     except Error as e:
         print(f"خطا در ساخت دیتابیس/جدول: {e}")
@@ -148,7 +163,6 @@ def add_comment_db(coin_name: str, username: str, comment: str) -> bool:
         query = "INSERT INTO comments (coin_name, username, comment) VALUES (%s, %s, %s)"
         cursor.execute(query, (coin_name.lower(), username, comment))
         connection.commit()  # ← این خیلی مهم بود! بدون commit چیزی ذخیره نمی‌شه
-        print(f"نظر @{username} برای {coin_name.upper()} ذخیره شد.")
         return True
     except Error as e:
         print(f"خطا در دیتابیس: {e}")
@@ -233,9 +247,6 @@ def fix_table_add_coin_column():
         
         # اضافه کردن ایندکس برای سرعت
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_coin ON comments(coin_name)")
-        
-        print("ستون coin_name با موفقیت اضافه شد!")
-        print("حالا همه چیز کار می‌کنه!")
 
     except Error as e:
         print(f"خطا: {e}")
@@ -298,11 +309,9 @@ def get_persian_description(coin_id="bitcoin"):
     if row and row['persian_description']:
         cursor.close()
         conn.close()
-        print(f"توضیحات {coin_id} از دیتابیس خوانده شد (کش شده)")
         return row['persian_description']
     
     # ۲. اگر نبود → از CoinGecko بگیر
-    print(f"در دیتابیس نبود. در حال دریافت از CoinGecko و ترجمه برای {coin_id}...")
     url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
     
     try:
@@ -340,7 +349,6 @@ def get_persian_description(coin_id="bitcoin"):
         cursor.close()
         conn.close()
         
-        print(f"ترجمه شد و در دیتابیس ذخیره شد: {coin_id}")
         return persian_text
         
     except requests.exceptions.RequestException as e:
@@ -419,12 +427,7 @@ def create_coin_votes_table():
 
 # گرفتن و ذهیره قیمت دلار در دیتابیس
 
-import mysql.connector
-import requests
-from datetime import datetime, timedelta
-import time
 
-# تنظیمات دیتابیس شما
 config = {
     'host': 'localhost',
     'user': 'pythonuser',
@@ -484,7 +487,6 @@ def fetch_dollar_from_api():
             close_price_str = latest_day[3].replace(",", "")
             close_price = int(float(close_price_str))
             
-            print(f"قیمت دلار از API دریافت شد: {close_price:,} ریال")
             return close_price
         else:
             print("داده‌ای در پاسخ API یافت نشد!")
@@ -518,7 +520,6 @@ def update_dollar_price_in_db(new_price):
     conn.commit()
     cursor.close()
     conn.close()
-    print(f"قیمت دلار در دیتابیس بروزرسانی شد: {new_price:,} ریال")
 
 def get_dollar_price():
     """
@@ -555,7 +556,6 @@ def get_dollar_price():
         
         # بررسی نیاز به بروزرسانی (بیش از 10 دقیقه)
         if last_update is None or datetime.now() - last_update > timedelta(minutes=10):
-            print("قیمت دلار قدیمی است → در حال بروزرسانی از API...")
             new_price = fetch_dollar_from_api()
             
             if new_price and new_price > 100000:  # فیلتر قیمت‌های نامعتبر

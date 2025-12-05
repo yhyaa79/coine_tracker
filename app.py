@@ -95,7 +95,6 @@ def crypto_market():
             "mcap_ath": raw_stats.get("mcap_ath"),
         }]
 
-        print("داده بازار با موفقیت ارسال شد:", result)  # برای دیباگ
         return jsonify(result)
 
     except requests.exceptions.RequestException as e:
@@ -126,7 +125,6 @@ def inf_coin(coinID):
         if usd_to_irr < 10000:
             usd_to_irr = 620000  # مقدار پیش‌فرض موقت
 
-        print(f".......{usd_to_irr}......")
         # محاسبه قیمت به تومان
         price_usd = float(coin.get("price_usd", 0))
         price_irr = price_usd * usd_to_irr
@@ -167,12 +165,12 @@ def get_data_chart():
         period = request.form.get('period', '60')
 
         PERIOD_CONFIG = {
-            "1":    (1,   "1h"),   # ۱ روز → ۲۴ ساعت اخیر (ساعتی)
-            "7":    (7,   "1h"),   # ۷ روز → ساعتی
-            "30":   (30,  "1d"),   # ۳۰ روز → روزانه
-            "60":   (60,  "1d"),
-            "120":  (120, "1d"),
-            "all":  (5000,"1d"),   # همه → از ۲۰۱۷ به بعد
+            "1":   (1,   "5m"),   # ۱ روز → هر ۵ دقیقه (بهترین رزولوشن برای ۲۴ ساعت)
+            "7":   (7,   "1h"),   # ۷ روز → ساعتی
+            "30":  (30,  "4h"),   # ۳۰ روز → هر ۴ ساعت (جزئیات عالی)
+            "60":  (60,  "1d"),   # ۶۰ روز → روزانه
+            "120": (120, "1d"),   # ۱۲۰ روز → روزانه
+            "all": (5000, "1d"),  # همه → روزانه
         }
 
         if period not in PERIOD_CONFIG:
@@ -197,8 +195,7 @@ def get_data_chart():
 
     except Exception as e:
         print("خطا در get_data_chart:", e)
-        return jsonify({"error": "خطای سرور"}), 500
-        
+        return jsonify({"error": "خطای سرور"}), 500        
 
 
 
@@ -209,7 +206,6 @@ def data_coin(coin_id: str):
         # فرض می‌کنیم تابع get_coin_info(coin_id) از کد قبلی من رو داری
         coin_data = get_coin_data(coin_id.lower())  # مثلاً "bitcoin" یا "pepe"
 
-        print(f"................{coin_data}.................")
         if not coin_data:
             return jsonify({"error": "کوین مورد نظر پیدا نشد یا خطا در دریافت اطلاعات"}), 404
 
@@ -418,7 +414,6 @@ def vote_coin(coin):
 @app.route('/comments_coin/<coin>', methods=['GET'])
 def comments_coin(coin):
     try:
-        print(f"درخواست کامنت برای: {coin!r}")  # برای دیباگ
         result = get_comments_by_coin(coin)
         return jsonify(result)
     except Exception as e:

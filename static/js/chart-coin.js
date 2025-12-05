@@ -1,5 +1,5 @@
 let chartInstance = null;
-let currentChartType = 'line'; // پیش‌فرض: خطی
+let currentChartType = 'line';
 
 async function getDataChart(coin, period = '60') {
     const formData = new FormData();
@@ -30,9 +30,15 @@ async function getDataChart(coin, period = '60') {
     } catch (error) {
         console.error("خطا:", error);
         document.querySelector('.coin-chart-container').innerHTML = 
-            `<p style="color:red;text-align:center;font-size:18px;padding:40px 0;">
-                خطا در بارگذاری چارت<br><br>${error.message}
-             </p>`;
+            `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:16px;">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="color:#ef4444;opacity:0.8;">
+                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                    <line x1="12" y1="8" x2="12" y2="12" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <p style="color:#ef4444;font-size:18px;font-weight:600;margin:0;">خطا در بارگذاری چارت</p>
+                <p style="color:#64748b;font-size:14px;margin:0;">${error.message}</p>
+             </div>`;
     }
 }
 
@@ -47,7 +53,6 @@ function renderChart(data, coinName, period) {
         return;
     }
 
-    // بررسی وجود پلاگین کندل استیک
     if (currentChartType === 'candle') {
         const hasFinancialPlugin = Chart.registry.plugins.get('chartjs-chart-financial') || 
                                    (Chart.controllers && Chart.controllers.candlestick);
@@ -75,7 +80,7 @@ function renderChart(data, coinName, period) {
     const lastClose = candlestickData[candlestickData.length - 1]?.c || prices[prices.length - 1];
     const isPositiveOverall = lastClose >= firstClose;
 
-    document.getElementById('coin-title').textContent = `چارت قیمت ${coinName.toUpperCase()}`;
+    document.getElementById('coin-title').textContent = `${coinName.toUpperCase()}`;
 
     if (chartInstance) {
         chartInstance.destroy();
@@ -95,15 +100,22 @@ function renderChart(data, coinName, period) {
                 }
             },
             grid: { 
-                color: 'rgba(148, 163, 184, 0.05)', 
-                drawBorder: false 
+                color: 'rgba(148, 163, 184, 0.08)',
+                lineWidth: 1,
+                drawBorder: false,
+                drawTicks: false
             },
             ticks: {
-                maxTicksLimit: 9,
-                color: '#64748b',
-                font: { size: 11, family: 'Vazir, sans-serif' },
+                maxTicksLimit: 8,
+                color: '#94a3b8',
+                font: { 
+                    size: 11, 
+                    family: 'Vazir, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                    weight: '500'
+                },
                 maxRotation: 0,
-                autoSkip: true
+                autoSkip: true,
+                padding: 12
             },
             border: { display: false }
         },
@@ -111,17 +123,23 @@ function renderChart(data, coinName, period) {
             position: 'right',
             beginAtZero: false,
             grid: { 
-                color: 'rgba(148, 163, 184, 0.1)', 
-                drawBorder: false 
+                color: 'rgba(148, 163, 184, 0.08)',
+                lineWidth: 1,
+                drawBorder: false,
+                drawTicks: false
             },
             ticks: {
                 callback: value => '$' + Number(value).toLocaleString('en-US', { 
                     minimumFractionDigits: 0, 
                     maximumFractionDigits: 2 
                 }),
-                color: '#64748b',
-                font: { size: 11, family: 'Vazir, sans-serif' },
-                padding: 8
+                color: '#94a3b8',
+                font: { 
+                    size: 11, 
+                    family: 'Vazir, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                    weight: '500'
+                },
+                padding: 12
             },
             border: { display: false }
         },
@@ -137,10 +155,18 @@ function renderChart(data, coinName, period) {
     if (currentChartType === 'line') {
         console.log('%cساخت چارت خطی...', 'color: green; font-weight: bold');
         
-        const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, isPositiveOverall ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)');
-        gradient.addColorStop(0.5, isPositiveOverall ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)');
-        gradient.addColorStop(1, isPositiveOverall ? 'rgba(34, 197, 94, 0)' : 'rgba(239, 68, 68, 0)');
+        const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 450);
+        if (isPositiveOverall) {
+            gradient.addColorStop(0, 'rgba(16, 185, 129, 0.35)');
+            gradient.addColorStop(0.4, 'rgba(16, 185, 129, 0.12)');
+            gradient.addColorStop(0.75, 'rgba(16, 185, 129, 0.04)');
+            gradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+        } else {
+            gradient.addColorStop(0, 'rgba(239, 68, 68, 0.35)');
+            gradient.addColorStop(0.4, 'rgba(239, 68, 68, 0.12)');
+            gradient.addColorStop(0.75, 'rgba(239, 68, 68, 0.04)');
+            gradient.addColorStop(1, 'rgba(239, 68, 68, 0)');
+        }
 
         chartInstance = new Chart(ctx, {
             type: 'line',
@@ -148,17 +174,18 @@ function renderChart(data, coinName, period) {
                 labels: timestamps,
                 datasets: [
                     {
-                        label: `قیمت ${coinName.toUpperCase()}`,
+                        label: `قیمت ${coinName}`,
                         data: timestamps.map((t, i) => ({ x: t, y: prices[i] })),
-                        borderColor: isPositiveOverall ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)',
+                        borderColor: isPositiveOverall ? 'rgb(16, 185, 129)' : 'rgb(239, 68, 68)',
                         backgroundColor: gradient,
                         fill: true,
-                        tension: 0.4,
+                        tension: 0.42,
                         pointRadius: 0,
-                        pointHoverRadius: 8,
-                        pointHoverBackgroundColor: isPositiveOverall ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)',
-                        pointHoverBorderColor: '#fff',
+                        pointHoverRadius: 7,
+                        pointHoverBackgroundColor: isPositiveOverall ? 'rgb(16, 185, 129)' : 'rgb(239, 68, 68)',
+                        pointHoverBorderColor: '#ffffff',
                         pointHoverBorderWidth: 3,
+                        borderWidth: 2.5,
                         yAxisID: 'y'
                     },
                     {
@@ -166,55 +193,134 @@ function renderChart(data, coinName, period) {
                         data: timestamps.map((t, i) => ({ x: t, y: volumes[i] })),
                         type: 'bar',
                         yAxisID: 'y1',
-                        backgroundColor: 'rgba(100, 116, 139, 0.3)',
-                        borderColor: 'rgba(100, 116, 139, 0.6)',
-                        borderWidth: 1,
-                        barThickness: 6
+                        backgroundColor: ctx => {
+                            const idx = ctx.dataIndex;
+                            if (idx === 0) return 'rgba(148, 163, 184, 0.25)';
+                            const curr = prices[idx];
+                            const prev = prices[idx - 1];
+                            return curr >= prev ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)';
+                        },
+                        borderColor: ctx => {
+                            const idx = ctx.dataIndex;
+                            if (idx === 0) return 'rgba(148, 163, 184, 0.5)';
+                            const curr = prices[idx];
+                            const prev = prices[idx - 1];
+                            return curr >= prev ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)';
+                        },
+                        borderWidth: 0,
+                        borderRadius: 2,
+                        barThickness: 'flex',
+                        maxBarThickness: 8
                     }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
+                interaction: { 
+                    mode: 'index', 
+                    intersect: false,
+                    axis: 'x'
+                },
                 plugins: {
                     legend: { 
                         display: true, 
                         position: 'top', 
-                        align: 'end', 
+                        align: 'end',
+                        rtl: true,
                         labels: { 
-                            usePointStyle: true, 
-                            padding: 20, 
-                            font: { size: 12, family: 'Vazir, sans-serif' }, 
-                            color: '#64748b' 
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 16,
+                            boxWidth: 8,
+                            boxHeight: 8,
+                            font: { 
+                                size: 12.5, 
+                                family: 'Vazir, -apple-system, BlinkMacSystemFont, sans-serif',
+                                weight: '600'
+                            }, 
+                            color: '#64748b'
                         } 
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                        titleColor: '#fff',
+                        enabled: true,
+                        backgroundColor: 'rgba(15, 23, 42, 0.97)',
+                        titleColor: '#f1f5f9',
                         bodyColor: '#cbd5e1',
-                        borderColor: '#334155',
+                        borderColor: 'rgba(100, 116, 139, 0.3)',
                         borderWidth: 1,
-                        padding: 12,
+                        padding: 16,
+                        cornerRadius: 12,
+                        displayColors: true,
+                        boxWidth: 10,
+                        boxHeight: 10,
+                        boxPadding: 6,
+                        usePointStyle: true,
                         rtl: true,
+                        titleFont: {
+                            size: 13,
+                            weight: '600',
+                            family: 'Vazir, sans-serif'
+                        },
+                        bodyFont: {
+                            size: 12.5,
+                            weight: '500',
+                            family: 'Vazir, sans-serif'
+                        },
+                        bodySpacing: 8,
                         callbacks: {
+                            title: function(context) {
+                                const date = new Date(context[0].parsed.x);
+                                return date.toLocaleDateString('fa-IR', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                            },
                             label: function(context) {
                                 if (context.datasetIndex === 0) {
                                     const price = context.parsed.y;
                                     const prev = context.dataIndex > 0 ? prices[context.dataIndex - 1] : price;
                                     const change = ((price - prev) / prev * 100).toFixed(2);
+                                    const changeText = change >= 0 ? `+${change}%` : `${change}%`;
                                     return [
-                                        `قیمت: $${price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 
-                                        `تغییرات: ${change >= 0 ? '+' : ''}${change}%`
+                                        `قیمت: $${price.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`,
+                                        `تغییر: ${changeText}`
                                     ];
                                 } else {
-                                    return `حجم: $${(context.parsed.y / 1e9).toFixed(2)}B`;
+                                    const vol = context.parsed.y;
+                                    if (vol >= 1e9) return `حجم: $${(vol / 1e9).toFixed(2)}B`;
+                                    if (vol >= 1e6) return `حجم: $${(vol / 1e6).toFixed(2)}M`;
+                                    return `حجم: $${(vol / 1e3).toFixed(2)}K`;
                                 }
                             }
                         }
+                    },
+                    crosshair: {
+                        line: {
+                            color: 'rgba(148, 163, 184, 0.4)',
+                            width: 1,
+                            dashPattern: [5, 5]
+                        },
+                        sync: {
+                            enabled: false
+                        },
+                        zoom: {
+                            enabled: false
+                        }
                     }
                 },
-                scales: commonScales
+                scales: commonScales,
+                layout: {
+                    padding: {
+                        top: 10,
+                        bottom: 10,
+                        left: 5,
+                        right: 5
+                    }
+                }
             }
         });
 
@@ -229,74 +335,135 @@ function renderChart(data, coinName, period) {
                 data: {
                     datasets: [
                         {
-                            label: `${coinName.toUpperCase()}`,
+                            label: `${coinName}`,
                             data: candlestickData,
                             borderColor: {
-                                up: 'rgb(34, 197, 94)',
+                                up: 'rgb(16, 185, 129)',
                                 down: 'rgb(239, 68, 68)',
-                                unchanged: '#64748b'
+                                unchanged: '#94a3b8'
                             },
                             backgroundColor: {
-                                up: 'rgba(34, 197, 94, 0.8)',
-                                down: 'rgba(239, 68, 68, 0.8)',
-                                unchanged: 'rgba(100, 116, 139, 0.8)'
+                                up: 'rgba(16, 185, 129, 0.9)',
+                                down: 'rgba(239, 68, 68, 0.9)',
+                                unchanged: 'rgba(148, 163, 184, 0.8)'
                             },
-                            borderWidth: 2
+                            borderWidth: 1.5
                         },
                         {
                             label: 'حجم معاملات',
                             data: timestamps.map((t, i) => ({ x: t, y: volumes[i] })),
                             type: 'bar',
                             yAxisID: 'y1',
-                            backgroundColor: 'rgba(100, 116, 139, 0.3)',
-                            borderColor: 'rgba(100, 116, 139, 0.6)',
-                            borderWidth: 1,
-                            barThickness: 6
+                            backgroundColor: ctx => {
+                                const idx = ctx.dataIndex;
+                                if (idx === 0) return 'rgba(148, 163, 184, 0.25)';
+                                const curr = candlestickData[idx].c;
+                                const prev = candlestickData[idx].o;
+                                return curr >= prev ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)';
+                            },
+                            borderWidth: 0,
+                            borderRadius: 2,
+                            barThickness: 'flex',
+                            maxBarThickness: 8
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
+                    interaction: { 
+                        mode: 'index', 
+                        intersect: false,
+                        axis: 'x'
+                    },
                     plugins: {
                         legend: { 
                             display: true, 
                             position: 'top', 
-                            align: 'end', 
+                            align: 'end',
+                            rtl: true,
                             labels: { 
-                                usePointStyle: true, 
-                                padding: 20, 
-                                font: { size: 12, family: 'Vazir, sans-serif' }, 
-                                color: '#64748b' 
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 16,
+                                boxWidth: 8,
+                                boxHeight: 8,
+                                font: { 
+                                    size: 12.5, 
+                                    family: 'Vazir, -apple-system, BlinkMacSystemFont, sans-serif',
+                                    weight: '600'
+                                }, 
+                                color: '#64748b'
                             } 
                         },
                         tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                            titleColor: '#fff',
+                            enabled: true,
+                            backgroundColor: 'rgba(15, 23, 42, 0.97)',
+                            titleColor: '#f1f5f9',
                             bodyColor: '#cbd5e1',
-                            borderColor: '#334155',
+                            borderColor: 'rgba(100, 116, 139, 0.3)',
                             borderWidth: 1,
-                            padding: 12,
+                            padding: 16,
+                            cornerRadius: 12,
+                            displayColors: true,
+                            boxWidth: 10,
+                            boxHeight: 10,
+                            boxPadding: 6,
+                            usePointStyle: true,
                             rtl: true,
+                            titleFont: {
+                                size: 13,
+                                weight: '600',
+                                family: 'Vazir, sans-serif'
+                            },
+                            bodyFont: {
+                                size: 12.5,
+                                weight: '500',
+                                family: 'Vazir, sans-serif'
+                            },
+                            bodySpacing: 8,
                             callbacks: {
+                                title: function(context) {
+                                    const date = new Date(context[0].parsed.x);
+                                    return date.toLocaleDateString('fa-IR', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    });
+                                },
                                 label: function(context) {
                                     if (context.datasetIndex === 0) {
                                         const d = context.raw;
+                                        const change = ((d.c - d.o) / d.o * 100).toFixed(2);
+                                        const changeText = change >= 0 ? `+${change}%` : `${change}%`;
                                         return [
                                             `باز: $${d.o.toFixed(2)}`,
+                                            `بسته: $${d.c.toFixed(2)}`,
                                             `بالا: $${d.h.toFixed(2)}`,
                                             `پایین: $${d.l.toFixed(2)}`,
-                                            `بسته: $${d.c.toFixed(2)}`
+                                            `تغییر: ${changeText}`
                                         ];
                                     } else {
-                                        return `حجم: $${(context.parsed.y / 1e9).toFixed(2)}B`;
+                                        const vol = context.parsed.y;
+                                        if (vol >= 1e9) return `حجم: $${(vol / 1e9).toFixed(2)}B`;
+                                        if (vol >= 1e6) return `حجم: $${(vol / 1e6).toFixed(2)}M`;
+                                        return `حجم: $${(vol / 1e3).toFixed(2)}K`;
                                     }
                                 }
                             }
                         }
                     },
-                    scales: commonScales
+                    scales: commonScales,
+                    layout: {
+                        padding: {
+                            top: 10,
+                            bottom: 10,
+                            left: 5,
+                            right: 5
+                        }
+                    }
                 }
             });
 
@@ -330,26 +497,26 @@ function displayStats(prices, volumes, coinName) {
     const low = Math.min(...prices);
     const avgVolume = volumes.reduce((a, b) => a + b, 0) / volumes.length;
 
-    // فقط مقدارها رو آپدیت می‌کنیم (ساختار قبلاً در HTML هست)
     const statsContainer = document.querySelector('.chart-stats .bottom-chart');
     if (!statsContainer) return;
 
-    // تغییرات
     const changeEl = statsContainer.children[0].querySelector('.stat-value');
     changeEl.textContent = `${isPositive ? '+' : ''}${priceChangePercent}%`;
     changeEl.className = `stat-value ${isPositive ? 'stat-change-positive' : 'stat-change-negative'}`;
 
-    // بالاترین
     statsContainer.children[1].querySelector('.stat-value').textContent = 
         `$${high.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-    // پایین‌ترین
     statsContainer.children[2].querySelector('.stat-value').textContent = 
         `$${low.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-    // میانگین حجم
-    statsContainer.children[3].querySelector('.stat-value').textContent = 
-        `$${(avgVolume / 1e9).toFixed(2)}B`;
+    const volText = avgVolume >= 1e9 
+        ? `$${(avgVolume / 1e9).toFixed(2)}B`
+        : avgVolume >= 1e6 
+        ? `$${(avgVolume / 1e6).toFixed(2)}M`
+        : `$${(avgVolume / 1e3).toFixed(2)}K`;
+    
+    statsContainer.children[3].querySelector('.stat-value').textContent = volText;
 }
 
 function getCoinFromUrl() {
@@ -358,10 +525,9 @@ function getCoinFromUrl() {
 }
 
 window.addEventListener('load', () => {
-    // تاخیر کوتاه برای اطمینان از لود شدن کامل پلاگین‌ها
     setTimeout(() => {
         const coinId = getCoinFromUrl();
-        document.getElementById('coin-title').textContent = `در حال بارگذاری چارت ${coinId.toUpperCase()}...`;
+        document.getElementById('coin-title').textContent = `${coinId.toUpperCase()}`;
         getDataChart(coinId, '7');
     }, 100);
 });
@@ -373,9 +539,6 @@ document.querySelectorAll('.period-btn').forEach(btn => {
 
         document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-
-        document.getElementById('coin-title').textContent = 
-            period === 'all' ? 'در حال بارگذاری کل تاریخچه...' : 'در حال بارگذاری...';
 
         getDataChart(coinId, period);
     });

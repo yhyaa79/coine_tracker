@@ -51,7 +51,6 @@ addEventListener('load', async () => {
 
         container.innerHTML = `
             <div class="market-overview-card">
-                <h2 class="overview-title">نمای کلی بازار کریپتو</h2>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -90,10 +89,6 @@ addEventListener('load', async () => {
                             ${parseFloat(stats.volume_change).toFixed(2)}%
                         </span>
                     </div>
-                </div>
-
-                <div class="update-time">
-                    آخرین بروزرسانی: ${new Date().toLocaleTimeString('fa-IR')}
                 </div>
             </div>
         `;

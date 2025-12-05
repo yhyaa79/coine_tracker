@@ -77,19 +77,21 @@ async function loadCoinDetail() {
             </div>
             
             <div class="category-inf">
+
                 <div class="direction-inf-coin"><strong>قیمت BTC:</strong> <p>${Number(coin.price_btc).toFixed(8)}</p></div>
+                <div class="direction-inf-coin"><strong>سکه در گردش:</strong><p> ${Number(coin.csupply || 0).toLocaleString()}</p></div>
+
                 <div class="direction-inf-coin"><strong>تغییرات ۱ ساعت:</strong> 
                     <span class="${coin.percent_change_1h >= 0 ? 'positive' : 'negative'}">
-                        <p>${Number(coin.percent_change_1h).toFixed(2)}%</p>
+                        <p style="color: inherit;">${Number(coin.percent_change_1h).toFixed(2)}%</p>
                     </span>
                 </div>
                 <div class="direction-inf-coin"><strong>تغییرات ۲۴ ساعت:</strong> 
                     <span class="${coin.percent_change_24h >= 0 ? 'positive' : 'negative'}">
-                        <p>${Number(coin.percent_change_24h).toFixed(2)}%</p>
+                        <p style="color: inherit;">${Number(coin.percent_change_24h).toFixed(2)}%</p>
                     </span>
                 </div>
 
-                <div class="direction-inf-coin"><strong>سکه در گردش:</strong><p> ${Number(coin.csupply || 0).toLocaleString()}</p></div>
                 <div class="direction-inf-coin"><strong>کل عرضه:</strong><p> ${coin.tsupply ? Number(coin.tsupply).toLocaleString() : 'نامحدود'}</p></div>
                 <div class="direction-inf-coin"><strong>حداکثر عرضه:</strong><p> ${coin.msupply ? Number(coin.msupply).toLocaleString() : 'نامحدود'}</p></div>
             </div>

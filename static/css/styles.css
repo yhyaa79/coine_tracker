@@ -6,12 +6,11 @@
 body {
     background-color: #000000;
     font-family: 'Vazir', sans-serif;
-    overflow: hidden;
 }
 
 .heder {
     height: 25px;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 15px;
     background-color: #141921;
@@ -63,14 +62,18 @@ button {
 }
 
 .market-content {
-    margin-top: 20px;
+    margin-top: 8px;
     width: 100%;
-    min-height: 300px;
+    min-height: 150px;
     border-radius: 12px;
     background-color: #141921;
 }
 
 .coin-list {
+    padding: 10px;
+}
+
+#market-overview {
     padding: 10px;
 }
 
@@ -92,7 +95,7 @@ button {
 }
 
 .stat-item {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     padding: 8px;
     border-radius: 12px;
     text-align: center;
@@ -126,7 +129,7 @@ button {
 
 
 .main-content {
-    margin-top: 20px;
+    margin-top: 8px;
     width: 100%;
     min-height: 600px;
     border-radius: 12px;
@@ -140,7 +143,7 @@ button {
     width: 100%;
     border-bottom: 2px solid #575757;
     color: #bdbdbd;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .heder-coin-num-list,
@@ -159,11 +162,15 @@ button {
     align-items: center;
     display: flex;
     color: #bdbdbd;
-    font-size: 15px;
+    font-size: 13px;
     width: 100%;
     border-bottom: 1px solid #575757;
     height: 75px;
 
+}
+
+.coin:hover {
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .coin-num-list,
@@ -183,8 +190,9 @@ button {
 }
 
 .image-logo {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
+    display: block;
 }
 
 .heder-coin-num-list,
@@ -235,10 +243,17 @@ button {
 
 
 
+.positive {
+    color: #22c55e;
+    opacity: 0.8;
+}
 
 
+.negative {
+    color: #ef4444;
+    opacity: 0.8;
 
-
+}
 
 
 
@@ -262,7 +277,7 @@ span {
     width: 100%;
     border-radius: 12px;
     background-color: #141921;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
 
 }
 
@@ -297,8 +312,8 @@ span {
 .commenting-userame {
     height: 22px;
     resize: none;
-    border: 1px solid #575757;
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #575757b5;
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
     padding: 8px;
@@ -309,8 +324,8 @@ span {
     resize: none;
     width: 94%;
     min-height: 100px;
-    border: 1px solid #575757;
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #575757b5;
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
     padding: 8px;
@@ -320,9 +335,9 @@ span {
 
 .commentin-add {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 6px 3%;
     margin: 0 1%;
@@ -340,8 +355,8 @@ span {
 }
 
 .survey {
-    border: 1px solid #575757;
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #575757b5;
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
     padding: 15px;
@@ -383,7 +398,7 @@ span {
     overflow: hidden;
     position: relative;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
 }
 
 
@@ -479,10 +494,10 @@ span {
 
 .direction-inf-coin {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 10px;
@@ -501,8 +516,8 @@ span {
 
 
 .comment-item {
-    border: 1px solid #575757;
-    background: rgba(255, 255, 255, 0.05);
+/*     border: 1px solid #575757b5; */
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
     padding: 15px;
@@ -534,7 +549,7 @@ span {
 
 
 .stat-item {
-    border: 1px solid #575757;
+    /* border: 1px solid #575757b5; */
     border-radius: 8px;
     text-align: center;
     flex: 1;
@@ -589,9 +604,9 @@ span {
 
 .period-buttons {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 7px 2%;
 }
@@ -599,9 +614,9 @@ span {
 
 .period-btn {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 6px 3%;
     margin: 0 1%;
@@ -617,22 +632,22 @@ span {
 
 .chart-type-buttons {
     position: absolute;
-    left: 0px;
+    /* left: 0px; */
     margin-top: 5px;
     width: 180px;
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 7px 2%;
 }
 
 .chart-type-btn {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 6px 3%;
     margin: 0 1%;
@@ -661,10 +676,10 @@ span {
 
 .calculator {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 20px;
@@ -672,9 +687,9 @@ span {
 
 #selectDollarToman {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 6px 3%;
     margin: 5px 1%;
@@ -685,8 +700,8 @@ span {
 #inDollarToman {
     height: 22px;
     resize: none;
-    border: 1px solid #575757;
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #575757b5;
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
     padding: 8px;
@@ -696,8 +711,8 @@ span {
 #inCoin {
     height: 22px;
     resize: none;
-    border: 1px solid #575757;
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #575757b5;
+    background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
     padding: 8px;
@@ -711,10 +726,10 @@ span {
     direction: rtl;
     text-align: justify;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 20px;
@@ -729,10 +744,10 @@ span {
     /* direction: rtl; */
     /* text-align: justify; */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 20px;
@@ -740,9 +755,9 @@ span {
 
 .coin-links {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 10px;
@@ -760,9 +775,9 @@ span {
 
 
 .coin-explorers {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 10px;
@@ -776,9 +791,9 @@ span {
 
 
 .coin-categories {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 10px;
@@ -790,9 +805,9 @@ span {
 
 .coin-info-grid {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: flex;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 4%;
     margin: 10px 0;
@@ -802,10 +817,10 @@ span {
 
 .label-p {
     text-align: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757;
+    border: 1px solid #575757b5;
     border-radius: 8px;
     padding: 2% 1%;
     margin-top: 10px;

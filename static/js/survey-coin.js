@@ -1,3 +1,5 @@
+
+
 async function loadCoinSurvey() {
     const coinName = getCoinFromUrl(); // تابع خودت که کوین رو از URL می‌گیره
     if (!coinName) {
@@ -25,6 +27,7 @@ async function updateSurvey(coin) {
         const total = data.total || 0;
         const percent = total === 0 ? 50 : data.percentage_bullish;
 
+        document.querySelector('.sentiment-bar-container').setAttribute('data-percent', Math.round(percent));
         document.getElementById('bullishCount').textContent = bullish;
         document.getElementById('bearishCount').textContent = bearish;
         document.getElementById('totalVotes').textContent = total;

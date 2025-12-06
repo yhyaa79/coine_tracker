@@ -10,7 +10,7 @@ body {
 
 .heder {
     height: 25px;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 15px;
     background-color: #141921;
@@ -277,7 +277,7 @@ span {
     width: 100%;
     border-radius: 12px;
     background-color: #141921;
-    border: 1px solid #575757b5;
+
 
 }
 
@@ -296,8 +296,8 @@ span {
 .chart-detail {
     width: 100%;
     margin: 0 280px 0 280px;
-    border-right: 1px solid #575757;
-    border-left: 1px solid #575757;
+/*     border-right: 1px solid #575757;
+    border-left: 1px solid #575757; */
     padding: 5px;
 
 }
@@ -312,7 +312,7 @@ span {
 .commenting-userame {
     height: 22px;
     resize: none;
-    border: 1px solid #575757b5;
+
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
@@ -324,7 +324,7 @@ span {
     resize: none;
     width: 94%;
     min-height: 100px;
-    border: 1px solid #575757b5;
+
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
@@ -337,7 +337,7 @@ span {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 6px 3%;
     margin: 0 1%;
@@ -355,7 +355,7 @@ span {
 }
 
 .survey {
-    border: 1px solid #575757b5;
+
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
@@ -373,7 +373,7 @@ span {
     background: rgba(255, 255, 255, 0.04);
     display: inline-block;
     width: 100%;
-    border: 1px solid #575757b5;
+
     border-radius: 15px;
     padding-top: 14px;
     margin-top: 10px;
@@ -412,7 +412,7 @@ span {
     overflow: hidden;
     position: relative;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
-    border: 1px solid #575757b5;
+
 }
 
 
@@ -450,6 +450,27 @@ span {
     margin-top: 5px;
 }
 
+
+/* نمایش درصد وسط نوار (اختیاری – خیلی قشنگ میشه) */
+.sentiment-bar-container::before {
+    content: attr(data-percent) "% صعودی";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    z-index: 3;
+    pointer-events: none;
+    background: rgba(0,0,0,0.4);
+    padding: 4px 12px;
+    border-radius: 8px;
+    backdrop-filter: blur(4px);
+}
+
+
 .btn-bullish,
 .btn-bearish {
     padding: 3px 10px;
@@ -463,23 +484,23 @@ span {
 }
 
 .btn-bullish {
-    background: #117a3c;
-    color: #bdbdbd;
-    border: 2px solid #079240;
+    background: #29c878;
+    color: #e9e9e9;
+    border: 2px solid #579073;
 }
 
 .btn-bearish {
-    background: #8e2217;
-    color: #bdbdbd;
-    border: 2px solid #a01010;
+    background: #e42521;
+    color: #e9e9e9;
+    border: 2px solid #e55955;
 }
 
 .btn-bullish:hover {
-    background: rgb(16, 103, 52);
+    background: #23ad68;
 }
 
 .btn-bearish:hover {
-    background: #7b2218;
+    background: #bb1d1b;
 }
 
 #voteMessage {
@@ -495,12 +516,9 @@ span {
     right: 0;
     top: 0;
     height: 100%;
-    background: linear-gradient(90deg, 
-        #10b981 0%, 
-        #34d399 50%, 
-        #6ee7b7 100%);
+    background: linear-gradient(322deg, #31d483 0%, #449b6f 50%, #11a159 100%);
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
         0 0 20px rgba(16, 185, 129, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     animation: pulse-green 2s ease-in-out infinite;
@@ -511,12 +529,9 @@ span {
     left: 0;
     top: 0;
     height: 100%;
-    background: linear-gradient(270deg, 
-        #ef4444 0%, 
-        #f87171 50%, 
-        #fca5a5 100%);
+    background: linear-gradient(170deg, #ea2828 0%, #c13030 50%, #e42521 100%);
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 
+    box-shadow:
         0 0 20px rgba(239, 68, 68, 0.4),
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
     animation: pulse-red 2s ease-in-out infinite;
@@ -531,32 +546,44 @@ span {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.3), 
-        transparent);
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.3),
+            transparent);
     animation: shine 3s infinite;
 }
 
 @keyframes shine {
-    0% { left: -100%; }
-    50%, 100% { left: 100%; }
+    0% {
+        left: -100%;
+    }
+
+    50%,
+    100% {
+        left: 100%;
+    }
 }
 
 @keyframes pulse-green {
-    0%, 100% { 
+
+    0%,
+    100% {
         filter: brightness(1);
     }
-    50% { 
+
+    50% {
         filter: brightness(1.1);
     }
 }
 
 @keyframes pulse-red {
-    0%, 100% { 
+
+    0%,
+    100% {
         filter: brightness(1);
     }
-    50% { 
+
+    50% {
         filter: brightness(1.1);
     }
 }
@@ -576,7 +603,7 @@ span {
     background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 10px;
@@ -595,7 +622,7 @@ span {
 
 
 .comment-item {
-    /*     border: 1px solid #575757b5; */
+    /*  */
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
@@ -685,7 +712,7 @@ span {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 7px 2%;
 }
@@ -695,7 +722,7 @@ span {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
-    border: 1px solid #575757b5;
+    border: none;
     border-radius: 8px;
     padding: 6px 3%;
     margin: 0 1%;
@@ -717,7 +744,7 @@ span {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 7px 2%;
 }
@@ -726,7 +753,7 @@ span {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
-    border: 1px solid #575757b5;
+    border: none;
     border-radius: 8px;
     padding: 6px 3%;
     margin: 0 1%;
@@ -758,7 +785,7 @@ span {
     background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 20px;
@@ -768,7 +795,7 @@ span {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
-    border: 1px solid #575757b5;
+    border: none;
     border-radius: 8px;
     padding: 6px 3%;
     margin: 5px 1%;
@@ -779,7 +806,7 @@ span {
 #inDollarToman {
     height: 22px;
     resize: none;
-    border: 1px solid #575757b5;
+    border: none;
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
@@ -790,7 +817,7 @@ span {
 #inCoin {
     height: 22px;
     resize: none;
-    border: 1px solid #575757b5;
+    border: none;
     background: rgba(255, 255, 255, 0.04);
     color: #bdbdbd;
     border-radius: 8px;
@@ -808,7 +835,7 @@ span {
     background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 20px;
@@ -826,7 +853,7 @@ span {
     background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 20px;
@@ -836,7 +863,7 @@ span {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 10px;
@@ -856,7 +883,7 @@ span {
 .coin-explorers {
     background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 10px;
@@ -872,7 +899,7 @@ span {
 .coin-categories {
     background: rgba(255, 255, 255, 0.04);
     display: flow;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 4%;
     margin-top: 10px;
@@ -886,7 +913,7 @@ span {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
     display: flex;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 4%;
     margin: 10px 0;
@@ -899,7 +926,7 @@ span {
     background: rgba(255, 255, 255, 0.04);
     display: grid;
     width: 92%;
-    border: 1px solid #575757b5;
+
     border-radius: 8px;
     padding: 2% 1%;
     margin-top: 10px;

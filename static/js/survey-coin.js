@@ -26,7 +26,7 @@ async function updateSurvey(coin) {
         const bearish = data.bearish || 0;
         const total = data.total || 0;
         const percent = total === 0 ? 50 : data.percentage_bullish;
-
+        
         document.querySelector('.sentiment-bar-container').setAttribute('data-percent', Math.round(percent));
         document.getElementById('bullishCount').textContent = bullish;
         document.getElementById('bearishCount').textContent = bearish;

@@ -29,6 +29,8 @@ CORS(app, supports_credentials=True)  # اجازه می‌ده credentials: 'inc
 COINLORE_API_ALL_COINS = "https://api.coinlore.com/api/tickers/"
 COINLORE_API_CRYPTO_MARKET = "https://api.coinlore.net/api/global/"
 
+
+print("..... 1 ......")
 @app.route('/all_coins')
 def all_coins():
     try:
@@ -65,7 +67,7 @@ def all_coins():
     
 
 
-
+print("..... 2 ......")
 @app.route('/crypto_market')
 def crypto_market():
     try:
@@ -105,7 +107,7 @@ def crypto_market():
         return jsonify([]), 500
     
     
-
+print("..... 3 ......")
 @app.route('/inf_coin/<int:coinID>', methods=['POST', 'GET'])
 def inf_coin(coinID):
     try:
@@ -158,7 +160,7 @@ def inf_coin(coinID):
     
 
 
-
+print("..... 4 ......")
 @app.route('/get_data_chart', methods=['POST'])
 def get_data_chart():
     try:
@@ -166,6 +168,7 @@ def get_data_chart():
         period = request.form.get('period', '60')
 
         PERIOD_CONFIG = {
+            "0.1":   (0.1,   "1m"),
             "1":   (1,   "5m"),   # ۱ روز → هر ۵ دقیقه (بهترین رزولوشن برای ۲۴ ساعت)
             "7":   (7,   "30m"),   # ۷ روز → ساعتی
             "30":  (30,  "2h"),   # ۳۰ روز → هر ۴ ساعت (جزئیات عالی)
@@ -200,7 +203,7 @@ def get_data_chart():
 
 
 
-
+print("..... 5 ......")
 @app.route('/data_coin/<coin_id>', methods=['POST'])  # بهتره از string باشه نه int
 def data_coin(coin_id: str):
     try:
@@ -240,7 +243,7 @@ def data_coin(coin_id: str):
 
 
 
-
+print("..... 6 ......")
 @app.route('/get_description/<coin>', methods=['GET'])
 def get_description(coin):
     try:

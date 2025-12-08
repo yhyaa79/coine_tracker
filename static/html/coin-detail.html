@@ -27,6 +27,11 @@
             color: #666;
         }
     </style>
+
+
+<style>
+
+</style>
 </head>
 
 <body style="overflow: hidden;">
@@ -74,7 +79,8 @@
                             <button class="period-btn" data-period="120">۱۲۰ روز</button>
                             <button class="period-btn" data-period="all">همه زمان‌ها</button>
                         </div>
-                        <div class="chart-line-candle">
+
+                        <div class="chart-controls-right">
                             <div class="chart-type-buttons">
                                 <button class="chart-type-btn active" data-type="line">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -95,7 +101,26 @@
                                     کندل استیک
                                 </button>
                             </div>
+
+                            <!-- دکمه جدید AI -->
+                            <button id="ai-prediction-btn" class="ai-btn" title="پیش‌بینی ۱۰ دقیقه آینده با هوش مصنوعی">
+
+                                پیش‌بینی AI
+                            </button>
                         </div>
+                    </div>
+
+                    <!-- باکس نمایش پیش‌بینی AI -->
+                    <div id="ai-prediction-box" class="ai-prediction-box" style="display: none;">
+                        <div class="ai-header">
+
+                            <strong>پیش‌بینی هوش مصنوعی (۱۰ دقیقه آینده)</strong>
+                        </div>
+                        <div class="ai-content">
+
+                        </div>
+                        <small id="ai-timestamp" style="color:#94a3b8; margin-top:8px; display:block;">در حال
+                            بارگذاری...</small>
                     </div>
 
                     <h2 id="coin-title">در حال بارگذاری...</h2>
@@ -153,14 +178,16 @@
                     <div class="vote-buttons">
                         <button onclick="vote('bullish')" class="btn-bullish">صعودی
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-graph-up-arrow" viewBox="0 0 16 16" style="position: relative; top: 4px; right: 2px;">
+                                class="bi bi-graph-up-arrow" viewBox="0 0 16 16"
+                                style="position: relative; top: 4px; right: 2px;">
                                 <path fill-rule="evenodd"
                                     d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5" />
                             </svg>
                         </button>
                         <button onclick="vote('bearish')" class="btn-bearish">نزولی
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                class="bi bi-graph-down-arrow" viewBox="0 0 16 16" style="position: relative; top: 4px; right: 2px;">
+                                class="bi bi-graph-down-arrow" viewBox="0 0 16 16"
+                                style="position: relative; top: 4px; right: 2px;">
                                 <path fill-rule="evenodd"
                                     d="M0 0h1v15h15v1H0zm10 11.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-1 0v2.6l-3.613-4.417a.5.5 0 0 0-.74-.037L7.06 8.233 3.404 3.206a.5.5 0 0 0-.808.588l4 5.5a.5.5 0 0 0 .758.06l2.609-2.61L13.445 11H10.5a.5.5 0 0 0-.5.5" />
                             </svg>
@@ -196,6 +223,7 @@
     <script src="/static/js/inf-coin.js"></script>
     <script src="/static/js/culator-coin.js"></script>
     <script src="/static/js/chart-coin.js"></script>
+    <script src="/static/js/ai-coin.js"></script>
     <script src="/static/js/data_coin.js"></script>
     <script src="/static/js/description-coin.js"></script>
     <script src="/static/js/survey-coin.js"></script>

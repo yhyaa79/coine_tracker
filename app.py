@@ -1,7 +1,7 @@
 import os
 # بالای فایل، بعد از importها این خط رو اضافه کن
 from flask import Flask, request, jsonify, Response, session, send_from_directory, render_template
-from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description, get_dollar_price, get_coin_data
+from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description, get_dollar_price, get_coin_data, get_current_prediction
 import requests
 """ from utils import 
 from config import  """
@@ -201,6 +201,64 @@ def get_data_chart():
         print("خطا در get_data_chart:", e)
         return jsonify({"error": "خطای سرور"}), 500
 
+
+
+# در فایل اصلی Flask (مثلاً app.py)
+
+@app.route('/get_ai_prediction', methods=['GET', 'POST'])
+def get_ai_prediction():
+    try:
+        conn = None
+        cursor = None
+        predictions = []
+
+        conn = mysql.connector.connect(**config)  # همون config که توی اسکریپت پیش‌بینی داری
+        cursor = conn.cursor(dictionary=True)  # dictionary=True خیلی مهمه برای jsonify
+
+        # گرفتن آخرین ۵۰ پیش‌بینی (یا همه، یا با LIMIT دلخواه)
+        query = """
+        SELECT 
+            symbol,
+            current_price,
+            predicted_price_10min,
+            change_percent,
+            direction,
+            strength,
+            timestamp_data AS timestamp
+        FROM btc_predictions 
+        ORDER BY timestamp_data DESC 
+        LIMIT 50
+        """
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+        for row in rows:
+            predictions.append({
+                "symbol": row["symbol"],
+                "current_price": float(row["current_price"]),
+                "predicted_price": float(row["predicted_price_10min"]),
+                "change_percent": float(row["change_percent"]),
+                "direction": row["direction"],
+                "strength": row["strength"],
+                "timestamp": row["timestamp"].strftime("%Y-%m-%d %H:%M:%S") if row["timestamp"] else "نامشخص"
+            })
+
+        return jsonify({
+            "success": True,
+            "predictions": predictions,
+            "latest": predictions[0] if predictions else None  # آخرین پیش‌بینی برای نمایش سریع
+        })
+
+    except Error as e:
+        return jsonify({"success": False, "error": f"خطای دیتابیس: {str(e)}"}), 500
+    except Exception as e:
+        print("خطای غیرمنتظره در get_ai_prediction:", e)
+        return jsonify({"success": False, "error": "خطای سرور"}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
 
 
 print("..... 5 ......")

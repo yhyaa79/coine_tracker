@@ -1,0 +1,8 @@
+Flask==3.0.3
+pandas==2.2.1
+numpy==1.26.4
+tensorflow==2.20.0
+ta==0.11.0
+requests==2.32.3
+joblib==1.3.2
+mysql-connector-python   # بدون نسخه → آخرین نسخه سازگار با پایتون 3.12

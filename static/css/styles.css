@@ -738,7 +738,7 @@ span {
 
 .chart-type-buttons {
     position: absolute;
-    /* left: 0px; */
+    left: 0px;
     margin-top: 5px;
     width: 180px;
     text-align: center;
@@ -934,3 +934,71 @@ span {
 
 
 
+
+
+.ai-prediction-box {
+    margin-top: 16px;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    background: #0f172a;
+    padding: 16px;
+    font-size: 0.95rem;
+}
+
+.ai-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1e293b;
+    margin-bottom: 12px;
+    color: #e2e8f0;
+    font-size: 1.1rem;
+}
+
+.ai-prediction-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.ai-pred-item {
+    padding: 10px 0;
+    border-bottom: 1px dashed #1e293b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.ai-pred-item.latest {
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.ai-pred-time {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    min-width: 140px;
+}
+
+.ai-pred-price span:first-child {
+    color: #cbd5e1;
+}
+
+.ai-btn {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ai-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}

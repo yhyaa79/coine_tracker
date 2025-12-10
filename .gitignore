@@ -3,10 +3,5 @@
 config.py
 
 Ai/
-
 models/
-
 coin_tracker_env/
-
-Ai/crypto_data/
-Ai/models/

@@ -1,0 +1,51 @@
+# docker-compose.yml
+version: '3.9'
+
+services:
+  web:
+    build: .
+    container_name: coin_tracker_web
+    restart: unless-stopped
+    ports:
+      - "4002:4002"
+    volumes:
+      - ./models:/app/models:ro          # مدل‌ها رو فقط خواندنی mount کن
+      - ./static:/app/static:ro
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - coin_network
+
+  db:
+    image: mysql:8.0
+    container_name: coin_tracker_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: comments_db
+      MYSQL_USER: pythonuser
+      MYSQL_PASSWORD: 135101220
+    ports:
+      - "3306:3306"              # فقط برای توسعه – در تولید حذف کن
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro   # اختیاری
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "--password=rootpass123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - coin_network
+
+volumes:
+  mysql_data:
+
+networks:
+  coin_network:
+    driver: bridge

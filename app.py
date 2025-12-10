@@ -9,11 +9,70 @@ import uuid
 import threading
 import mysql.connector
 from mysql.connector import Error
+from ai_prediction import get_current_prediction, save_to_db  # فقط اگر نیاز داری از توابعش استفاده کنی
 
 
 
+
+'''
+coin_tracker/
+├── app.py
+├── ai_prediction.py
+├── utils.py
+├── requirements.txt
+├── models/                   # مدل‌های .h5 یا SavedModel
+├── static/
+│   ├── css/
+│   ├── js/
+│   ├── image/
+│   └── index.html, coin-detail.html, ...
+├── Dockerfile
+├── docker-compose.yml
+└── init_db.sql               # اختیاری – برای ساخت جدول‌ها در اولین اجرا
+'''
 app = Flask(__name__,)
 app.secret_key = 'my_secret_key' 
+
+
+# تابع اصلی ربات (همون حلقه while که داخل ai_prediction.py بود)
+def run_prediction_bot():
+    import time
+    from datetime import datetime
+    import logging
+
+    logging.getLogger().info("ربات پیش‌بینی BTC در Thread جداگانه شروع شد...")
+
+    while True:
+        try:
+            start_time = time.time()
+            prediction = get_current_prediction()   # این تابع باید از ai_prediction.py در دسترس باشه
+            save_to_db(prediction)
+
+            print(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | "
+                  f"{prediction['direction']} {prediction['strength']} | "
+                  f"{prediction['current_price']} → {prediction['predicted_price_10min']} "
+                  f"({prediction['change_percent']:+.3f}%)")
+
+            elapsed = time.time() - start_time
+            sleep_time = max(0, 60 - elapsed)
+            time.sleep(sleep_time)
+
+        except KeyboardInterrupt:
+            print("ربات پیش‌بینی متوقف شد.")
+            break
+        except Exception as e:
+            logging.error(f"خطا در ربات پیش‌بینی: {e}")
+            time.sleep(30)
+
+# -------------------- مهم: اجرای ربات در پس‌زمینه --------------------
+def start_background_bot():
+    bot_thread = threading.Thread(target=run_prediction_bot, daemon=True)
+    bot_thread.start()
+    print("ربات پیش‌بینی BTC در پس‌زمینه شروع شد (Thread جداگانه)")
+
+# اجرای ربات دقیقاً وقتی که Flask شروع می‌شه
+with app.app_context():
+    start_background_bot()
 
 
 @app.route('/')
@@ -207,31 +266,31 @@ def get_data_chart():
 
 @app.route('/get_ai_prediction', methods=['GET', 'POST'])
 def get_ai_prediction():
+    conn = None
+    cursor = None
     try:
-        conn = None
-        cursor = None
-        predictions = []
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor(dictionary=True)
 
-        conn = mysql.connector.connect(**config)  # همون config که توی اسکریپت پیش‌بینی داری
-        cursor = conn.cursor(dictionary=True)  # dictionary=True خیلی مهمه برای jsonify
-
-        # گرفتن آخرین ۵۰ پیش‌بینی (یا همه، یا با LIMIT دلخواه)
         query = """
-        SELECT 
-            symbol,
-            current_price,
-            predicted_price_10min,
-            change_percent,
-            direction,
-            strength,
-            timestamp_data AS timestamp
-        FROM btc_predictions 
-        ORDER BY timestamp_data DESC 
-        LIMIT 50
+            SELECT 
+                symbol,
+                current_price,
+                predicted_price_10min,
+                change_percent,
+                direction,
+                strength,
+                features_used,
+                prediction_time AS timestamp,        -- زمان دقیق پیش‌بینی
+                timestamp_local                      -- زمان ثبت شدن در دیتابیس
+            FROM btc_predictions 
+            ORDER BY prediction_time DESC 
+            LIMIT 50
         """
         cursor.execute(query)
         rows = cursor.fetchall()
 
+        predictions = []
         for row in rows:
             predictions.append({
                 "symbol": row["symbol"],
@@ -240,20 +299,31 @@ def get_ai_prediction():
                 "change_percent": float(row["change_percent"]),
                 "direction": row["direction"],
                 "strength": row["strength"],
-                "timestamp": row["timestamp"].strftime("%Y-%m-%d %H:%M:%S") if row["timestamp"] else "نامشخص"
+                "timestamp": row["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
             })
+
+        latest = predictions[0] if predictions else None
 
         return jsonify({
             "success": True,
+            "count": len(predictions),
             "predictions": predictions,
-            "latest": predictions[0] if predictions else None  # آخرین پیش‌بینی برای نمایش سریع
+            "latest": latest
         })
 
-    except Error as e:
-        return jsonify({"success": False, "error": f"خطای دیتابیس: {str(e)}"}), 500
+    except mysql.connector.Error as e:
+        return jsonify({
+            "success": False,
+            "error": f"خطای دیتابیس: {str(e)}"
+        }), 500
+
     except Exception as e:
         print("خطای غیرمنتظره در get_ai_prediction:", e)
-        return jsonify({"success": False, "error": "خطای سرور"}), 500
+        return jsonify({
+            "success": False,
+            "error": "خطای داخلی سرور"
+        }), 500
+
     finally:
         if cursor:
             cursor.close()
@@ -511,4 +581,5 @@ def add_comment():
     
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=4002)  
+    # اگر مستقیم اجرا کردی، ربات هم شروع می‌شه
+    app.run(debug=False, host='0.0.0.0', port=4002, use_reloader=False)

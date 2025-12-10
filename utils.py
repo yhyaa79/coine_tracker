@@ -1,3 +1,5 @@
+from config import SYMBOL, INTERVAL, LIMIT, MODEL_PATH, SCALER_X_PATH, SCALER_Y_PATH, SEQUENCE_LENGTH, config
+
 import requests
 import pandas as pd
 from typing import Literal, Optional
@@ -116,74 +118,6 @@ def get_crypto_chart_binance(
     
 
 
-#### AI ####
-
-
-import requests
-import requests
-import pandas as pd
-import numpy as np
-import joblib
-from tensorflow.keras.models import load_model
-from ta import add_all_ta_features
-
-# تنظیمات (فقط اینا رو عوض کن اگر لازم بود)
-SYMBOL = "BTCUSDT"
-MODEL_PATH = "/Users/yayhaeslami/Python/my_workspace/resume/my_project/coin_tracker/Ai/models/BTCUSDT_10min_GRU_final.h5"
-SCALER_X_PATH = "/Users/yayhaeslami/Python/my_workspace/resume/my_project/coin_tracker/Ai/models/scaler_X_BTCUSDT.pkl"
-SCALER_Y_PATH = "/Users/yayhaeslami/Python/my_workspace/resume/my_project/coin_tracker/Ai/models/scaler_y_BTCUSDT.pkl"
-SEQUENCE_LENGTH = 90
-
-# بارگذاری مدل و اسکیلرها
-model = load_model(MODEL_PATH)
-scaler_X = joblib.load(SCALER_X_PATH)
-scaler_y = joblib.load(SCALER_Y_PATH)
-N_FEATURES = scaler_X.scale_.shape[0]
-
-def get_current_prediction():
-    # دریافت داده زنده
-    resp = requests.get("https://api.binance.com/api/v3/klines", params={
-        "symbol": SYMBOL, "interval": "1m", "limit": 300
-    }).json()
-
-    df = pd.DataFrame(resp, columns=['open_time','open','high','low','close','volume','','','','','',''])
-    df = df[['open_time','open','high','low','close','volume']]
-    df[['open','high','low','close','volume']] = df[['open','high','low','close','volume']].astype(float)
-    df['open_time'] = pd.to_datetime(df['open_time'], unit='ms')
-    df.set_index('open_time', inplace=True)
-
-    df = add_all_ta_features(df, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
-
-    # انتخاب بهترین ویژگی‌های موجود (به تعداد دقیق مدل)
-    priority = ['close','volume','volume','momentum_rsi','momentum_stoch','momentum_tsi',
-                'trend_macd','trend_macd_signal','trend_macd_diff',
-                'volatility_bbw','volatility_kcc','volume_obv','volume_vpt']
-    available = [c for c in priority if c in df.columns]
-    selected = available[:N_FEATURES]
-    seq = df[selected].tail(SEQUENCE_LENGTH).values
-
-    # پیش‌بینی
-    X = scaler_X.transform(seq.reshape(-1, N_FEATURES)).reshape(1, SEQUENCE_LENGTH, N_FEATURES)
-    pred_scaled = model.predict(X, verbose=0)
-    predicted_price = float(scaler_y.inverse_transform(pred_scaled)[0][0])
-
-    # قیمت فعلی (دقیق)
-    current_price = float(requests.get("https://api.binance.com/api/v3/ticker/price", 
-                                      params={"symbol": SYMBOL}).json()["price"])
-
-    change_percent = (predicted_price - current_price) / current_price * 100
-
-    # خروجی تمیز و آماده استفاده در چارت
-    return {
-        "symbol": SYMBOL,
-        "current_price": round(current_price, 2),
-        "predicted_price_10min": round(predicted_price, 2),
-        "change_percent": round(change_percent, 3),
-        "direction": "UP" if change_percent > 0 else "DOWN",
-        "strength": "STRONG" if abs(change_percent) >= 0.5 else "WEAK" if abs(change_percent) >= 0.15 else "NEUTRAL",
-        "timestamp": pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")
-    }
-
 
 
 #### mySQL ####
@@ -193,14 +127,6 @@ from mysql.connector import Error
 from datetime import datetime
 
 # ───── تنظیمات اتصال به MySQL ─────
-config = {
-    'host': 'localhost',
-    'user': 'pythonuser',
-    'password': '135101220',
-    'database': 'comments_db',
-    'charset': 'utf8mb4',
-    'autocommit': True
-}
 
 def create_database_and_table():
     """فقط یک بار اجرا کن - دیتابیس و جدول اصلی رو می‌سازه"""
@@ -349,16 +275,7 @@ import re
 import mysql.connector
 from deep_translator import GoogleTranslator
 
-# ───── تنظیمات دیتابیس (همون که دیتابیست رو استفاده می‌کنه) ─────
-config = {
-    'host': 'localhost',
-    'user': 'pythonuser',
-    'password': '135101220',
-    'database': 'comments_db',
-    'charset': 'utf8mb4',
-    'autocommit': True,
-    'collation': 'utf8mb4_unicode_ci'
-}
+
 
 # ───── ساخت جدول (فقط اولین بار اجرا می‌شه) ─────
 def create_table_if_not_exists():
@@ -447,16 +364,8 @@ def get_persian_description(coin_id="bitcoin"):
 
 ### ثبت و دریافت رای برای هر کوین
 """ 
-# کانفیگ دیتابیس (همون قبلی)
-config = {
-    'host': 'localhost',
-    'user': 'pythonuser',
-    'password': '135101220',
-    'database': 'comments_db',
-    'charset': 'utf8mb4',
-    'autocommit': True,
-    'raise_on_warnings': True
-}
+
+
 
 def get_db_connection():
     try:
@@ -507,18 +416,7 @@ def create_coin_votes_table():
 
 
 
-# گرفتن و ذهیره قیمت دلار در دیتابیس
 
-
-config = {
-    'host': 'localhost',
-    'user': 'pythonuser',
-    'password': '135101220',
-    'database': 'comments_db',
-    'charset': 'utf8mb4',
-    'autocommit': True,
-    'collation': 'utf8mb4_unicode_ci'
-}
 
 # آدرس API جدید
 API_URL = "https://api.tgju.org/v1/market/indicator/summary-table-data/price_dollar_rl"
@@ -758,202 +656,3 @@ def get_coin_data(coin_id: str) -> Optional[Dict]:
 
 
 
-
-
-
-'''
-import requests
-import pandas as pd
-import numpy as np
-import joblib
-from tensorflow.keras.models import load_model
-from ta import add_all_ta_features
-import mysql.connector
-from mysql.connector import Error
-import time
-from datetime import datetime
-import logging
-
-# ==================== تنظیمات ====================
-SYMBOL = "BTCUSDT"
-MODEL_PATH = "/Users/yayhaeslami/Python/my_workspace/resume/my_project/coin_tracker/Ai/models/BTCUSDT_10min_GRU_final.h5"
-SCALER_X_PATH = "/Users/yayhaeslami/Python/my_workspace/resume/my_project/coin_tracker/Ai/models/scaler_X_BTCUSDT.pkl"
-SCALER_Y_PATH = "/Users/yayhaeslami/Python/my_workspace/resume/my_project/coin_tracker/Ai/models/scaler_y_BTCUSDT.pkl"
-SEQUENCE_LENGTH = 90
-
-config = {
-    'host': 'localhost',
-    'user': 'pythonuser',
-    'password': '135101220',
-    'database': 'comments_db',
-    'charset': 'utf8mb4',
-    'autocommit': False,        # عمداً False کردیم تا خودمون commit بزنیم
-    'raise_on_warnings': True
-}
-
-# لاگ خیلی دقیق
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# بارگذاری مدل
-logging.info("در حال بارگذاری مدل و اسکیلرها...")
-model = load_model(MODEL_PATH)
-scaler_X = joblib.load(SCALER_X_PATH)
-scaler_y = joblib.load(SCALER_Y_PATH)
-N_FEATURES = scaler_X.scale_.shape[0]
-logging.info(f"مدل و اسکیلرها با موفقیت لود شدند | تعداد ویژگی‌ها: {N_FEATURES}")
-
-def save_to_database(prediction_data):
-    conn = None
-    cursor = None
-    try:
-        logging.debug("تلاش برای اتصال به دیتابیس...")
-        conn = mysql.connector.connect(**config)
-        cursor = conn.cursor()
-        logging.info("اتصال به MySQL با موفقیت برقرار شد!")
-
-        insert_query = """
-        INSERT INTO btc_predictions 
-        (symbol, current_price, predicted_price_10min, change_percent, direction, strength, timestamp_data)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """
-
-        values = (
-            prediction_data["symbol"],
-            float(prediction_data["current_price"]),
-            float(prediction_data["predicted_price_10min"]),
-            float(prediction_data["change_percent"]),
-            prediction_data["direction"],
-            prediction_data["strength"],
-            prediction_data["timestamp"]
-        )
-
-        logging.debug(f"اجرای کوئری با مقادیر: {values}")
-        cursor.execute(insert_query, values)
-        conn.commit()
-        
-        logging.info("داده با موفقیت در دیتابیس ذخیره شد! (commit انجام شد)")
-        logging.info(f"ردیف جدید: {prediction_data['symbol']} | {prediction_data['change_percent']:+.3f}% → {prediction_data['direction']} {prediction_data['strength']}")
-
-    except Error as e:
-        logging.error(f"خطای MySQL: {e} | کد خطا: {e.errno if hasattr(e, 'errno') else 'نامشخص'}")
-        if conn:
-            conn.rollback()
-            logging.info("rollback انجام شد")
-    except Exception as e:
-        logging.error(f"خطای غیرمنتظره در ذخیره‌سازی: {type(e).__name__}: {e}")
-        if conn:
-            conn.rollback()
-    finally:
-        if cursor:
-            cursor.close()
-        if conn and conn.is_connected():
-            conn.close()
-            logging.debug("اتصال به دیتابیس بسته شد")
-
-def get_current_prediction():
-    try:
-        logging.info("شروع دریافت داده از بایننس برای پیش‌بینی...")
-
-        # --- دریافت کلاین‌ها ---
-        resp = requests.get("https://api.binance.com/api/v3/klines", params={
-            "symbol": SYMBOL, "interval": "1m", "limit": 300
-        }, timeout=15)
-        resp.raise_for_status()
-        data = resp.json()
-
-        if not data or isinstance(data, dict):
-            raise ValueError("داده خالی یا خطا از بایننس")
-
-        df = pd.DataFrame(data, columns=['open_time','open','high','low','close','volume','','','','','',''])
-        df = df[['open_time','open','high','low','close','volume']].iloc[:-1]  # آخرین کندل ناتمام حذف بشه
-        df[['open','high','low','close','volume']] = df[['open','high','low','close','volume']].astype(float)
-        df['open_time'] = pd.to_datetime(df['open_time'], unit='ms')
-        df.set_index('open_time', inplace=True)
-
-        df = add_all_ta_features(df, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
-
-        priority = ['close','volume','volume','momentum_rsi','momentum_stoch','momentum_tsi',
-                    'trend_macd','trend_macd_signal','trend_macd_diff',
-                    'volatility_bbw','volatility_kcc','volume_obv','volume_vpt']
-        available = [c for c in priority if c in df.columns]
-        selected = available[:N_FEATURES]
-
-        if len(selected) < N_FEATURES:
-            logging.error(f"تعداد ویژگی‌های موجود: {len(selected)} < {N_FEATURES}")
-            return None
-
-        seq = df[selected].tail(SEQUENCE_LENGTH).values
-        logging.debug(f"داده ورودی آماده شد: {seq.shape}")
-
-        X = scaler_X.transform(seq.reshape(-1, N_FEATURES)).reshape(1, SEQUENCE_LENGTH, N_FEATURES)
-        pred_scaled = model.predict(X, verbose=0)
-        predicted_price = float(scaler_y.inverse_transform(pred_scaled)[0][0])
-
-        # --- دریافت قیمت فعلی (جداگانه و با try) ---
-        try:
-            price_resp = requests.get("https://api.binance.com/api/v3/ticker/price", 
-                                     params={"symbol": SYMBOL}, timeout=10)
-            price_resp.raise_for_status()
-            current_price = float(price_resp.json()["price"])
-        except Exception as e:
-            logging.error(f"خطا در دریافت قیمت فعلی: {e} — استفاده از آخرین close")
-            current_price = float(df['close'].iloc[-1])  # fallback
-
-        change_percent = (predicted_price - current_price) / current_price * 100
-
-        result = {
-            "symbol": SYMBOL,
-            "current_price": round(current_price, 2),
-            "predicted_price_10min": round(predicted_price, 2),
-            "change_percent": round(change_percent, 3),
-            "direction": "UP" if change_percent > 0 else "DOWN",
-            "strength": "STRONG" if abs(change_percent) >= 0.5 else "WEAK" if abs(change_percent) >= 0.15 else "NEUTRAL",
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        }
-
-        # --- چاپ و ذخیره ---
-        print(f"\n[{result['timestamp']}] {SYMBOL} | فعلی: ${result['current_price']:,} | پیش‌بینی: ${result['predicted_price_10min']:,} | {result['change_percent']:+.3f}% → {result['direction']} {result['strength']}")
-
-        # این خط حتماً اجرا بشه!
-        logging.info("در حال ذخیره پیش‌بینی در دیتابیس...")
-        save_to_database(result)
-        logging.info("پیش‌بینی با موفقیت ذخیره شد!")
-
-        return result
-
-    except Exception as e:
-        logging.error(f"خطای کلی در پیش‌بینی: {e}", exc_info=True)
-        return None
-
-# ==================== اجرای اصلی ====================
-if __name__ == "__main__":
-    print("ربات پیش‌بینی BTCUSDT شروع شد (با لاگ کامل برای دیباگ)")
-    logging.info("شروع لوپ اصلی...")
-
-    # اول یک بار تست دستی ذخیره
-    logging.info("تست اتصال و ذخیره در دیتابیس...")
-    test_data = {
-        "symbol": "BTCUSDT",
-        "current_price": 99999.99,
-        "predicted_price_10min": 100000.01,
-        "change_percent": 1.234,
-        "direction": "UP",
-        "strength": "STRONG",
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    }
-    save_to_database(test_data)
-
-    while True:
-        try:
-            prediction = get_current_prediction()
-            if prediction:
-                logging.info("پیش‌بینی با موفقیت انجام شد و ارسال شد به دیتابیس")
-            time.sleep(60)
-        except KeyboardInterrupt:
-            print("\nربات متوقف شد.")
-            break
-        except Exception as e:
-            logging.error(f"خطای غیرمنتظره در لوپ اصلی: {e}")
-            time.sleep(60)
-
-'''

@@ -5,3 +5,5 @@ config.py
 Ai/
 
 models/
+
+coin_tracker_env/

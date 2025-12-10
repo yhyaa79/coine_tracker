@@ -30,6 +30,8 @@ coin_tracker/
 ├── docker-compose.yml
 └── init_db.sql               # اختیاری – برای ساخت جدول‌ها در اولین اجرا
 '''
+
+
 app = Flask(__name__,)
 app.secret_key = 'my_secret_key' 
 

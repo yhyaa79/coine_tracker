@@ -58,7 +58,7 @@ async function loadCoinComment() {
     } catch (error) {
         console.error("خطا در دریافت کامنت‌ها:", error);
         commentsContainer.innerHTML = `
-            <div style="text-align:center;padding:30px;color:#e74c3c;background:#fdf2f2;border:1px solid #fadbd8;border-radius:8px;">
+            <div style="text-align:center;padding:30px;">
                 <p>خطا در بارگذاری نظرات</p>
                 <small>لطفاً دوباره تلاش کنید</small>
             </div>

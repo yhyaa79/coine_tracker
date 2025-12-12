@@ -1,0 +1,197 @@
+2025-12-11 14:42:19,154 - INFO - <module>:38 - شروع بارگذاری مدل و اسکیلرها...
+2025-12-11 14:42:19,157 - ERROR - <module>:46 - خطا در بارگذاری مدل یا اسکیلرها: [Errno 2] Unable to synchronously open file (unable to open file: name = '/Users/yayhaeslami/Python/my_workspace/resume/my_project/coin_tracker/models/BTCUSDT_10min_GRU_final.h5', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)
+2025-12-11 14:44:09,895 - INFO - <module>:38 - شروع بارگذاری مدل و اسکیلرها...
+2025-12-11 14:44:09,898 - ERROR - <module>:46 - خطا در بارگذاری مدل یا اسکیلرها: [Errno 2] Unable to synchronously open file (unable to open file: name = '/Users/yayhaeslami/Python/my_workspace/resume/my_project/coin_tracker/models/BTCUSDT_10min_GRU_final.h5', errno = 2, error message = 'No such file or directory', flags = 0, o_flags = 0)
+2025-12-11 14:45:29,955 - INFO - <module>:38 - شروع بارگذاری مدل و اسکیلرها...
+2025-12-11 14:45:30,416 - WARNING - try_build_compiled_arguments:249 - Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+2025-12-11 14:45:30,463 - INFO - <module>:44 - مدل و اسکیلرها با موفقیت بارگذاری شدند. تعداد فیچرها: 10
+2025-12-11 14:45:30,465 - INFO - run_prediction_bot:45 - ربات پیش‌بینی BTC در Thread جداگانه شروع شد...
+2025-12-11 14:45:30,465 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:45:30,498 - INFO - _log:97 - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:4002
+ * Running on http://192.0.2.1:4002
+2025-12-11 14:45:30,498 - INFO - _log:97 - [33mPress CTRL+C to quit[0m
+2025-12-11 14:45:31,654 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:45:31,667 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:45:31,667 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:45:31,757 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:45:31,758 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:45:31,758 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:45:33,679 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90351.9
+2025-12-11 14:45:33,680 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90351.90 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -1.005% | STRONG
+2025-12-11 14:45:38,712 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:45:43,329 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/html/coin-detail.html?id=90&name=Bitcoin HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,369 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/js/inf-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,370 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/js/culator-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,371 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,372 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/js/chart-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,374 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/js/data_coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,377 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/js/survey-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,377 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/js/description-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,377 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/js/ai-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,378 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "[36mGET /static/js/comment-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:45:43,540 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:43] "GET /get_survey_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:45:44,794 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:44] "POST /data_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:45:44,819 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:44] "POST /get_data_chart HTTP/1.1" 200 -
+2025-12-11 14:45:48,412 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:48] "[35m[1mGET /get_description/Bitcoin HTTP/1.1[0m" 500 -
+2025-12-11 14:45:48,413 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:48] "GET /comments_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:45:50,431 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:50] "GET /get_ai_prediction HTTP/1.1" 200 -
+2025-12-11 14:45:50,508 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:50] "POST /inf_coin/90 HTTP/1.1" 200 -
+2025-12-11 14:45:51,530 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:45:51] "POST /inf_coin/90 HTTP/1.1" 200 -
+2025-12-11 14:46:07,121 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/html/coin-detail.html?id=90&name=Bitcoin HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,137 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,140 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/js/inf-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,141 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/js/chart-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,142 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/js/culator-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,147 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/js/data_coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,148 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/js/ai-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,152 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/js/description-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,153 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/js/survey-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,153 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "[36mGET /static/js/comment-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:46:07,180 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "GET /get_survey_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:46:07,985 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:07] "POST /data_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:46:08,341 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:08] "POST /get_data_chart HTTP/1.1" 200 -
+2025-12-11 14:46:12,168 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:12] "[35m[1mGET /get_description/Bitcoin HTTP/1.1[0m" 500 -
+2025-12-11 14:46:12,169 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:12] "GET /comments_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:46:14,121 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:14] "POST /inf_coin/90 HTTP/1.1" 200 -
+2025-12-11 14:46:14,140 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:46:14] "POST /inf_coin/90 HTTP/1.1" 200 -
+2025-12-11 14:46:30,468 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:46:31,654 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:46:31,658 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:46:31,658 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:46:31,751 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:46:31,752 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:46:31,752 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:46:32,854 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90348.7
+2025-12-11 14:46:32,855 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90348.70 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -1.002% | STRONG
+2025-12-11 14:46:37,861 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:47:30,472 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:47:31,678 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:47:31,707 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:47:31,707 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:47:31,794 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:47:31,794 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:47:31,794 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:47:32,959 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90329.44
+2025-12-11 14:47:32,959 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90329.44 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -0.981% | STRONG
+2025-12-11 14:47:37,966 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:48:30,474 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:48:31,669 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:48:31,677 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:48:31,677 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:48:31,763 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:48:31,764 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:48:31,764 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:48:32,866 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90348.69
+2025-12-11 14:48:32,867 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90348.69 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -1.002% | STRONG
+2025-12-11 14:48:37,873 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:49:30,472 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:49:31,687 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:49:31,695 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:49:31,695 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:49:31,798 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:49:31,799 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:49:31,799 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:49:32,871 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90374.01
+2025-12-11 14:49:32,871 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90374.01 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -1.030% | STRONG
+2025-12-11 14:49:37,875 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:50:30,474 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:50:32,016 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:50:32,027 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:50:32,027 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:50:32,111 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:50:32,112 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:50:32,112 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:50:34,106 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90367.61
+2025-12-11 14:50:34,106 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90367.61 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -1.022% | STRONG
+2025-12-11 14:50:39,110 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:51:06,987 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:06] "[36mGET /static/html/coin-detail.html?id=90&name=Bitcoin HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,012 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,014 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/js/inf-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,016 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/js/culator-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,018 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/js/chart-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,022 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/js/ai-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,022 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/js/data_coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,024 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/js/description-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,027 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/js/survey-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,027 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "[36mGET /static/js/comment-coin.js HTTP/1.1[0m" 304 -
+2025-12-11 14:51:07,148 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "GET /get_survey_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:51:07,975 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:07] "POST /data_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:51:08,267 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:08] "POST /get_data_chart HTTP/1.1" 200 -
+2025-12-11 14:51:12,052 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:12] "[35m[1mGET /get_description/Bitcoin HTTP/1.1[0m" 500 -
+2025-12-11 14:51:12,055 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:12] "GET /comments_coin/Bitcoin HTTP/1.1" 200 -
+2025-12-11 14:51:14,479 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:14] "POST /inf_coin/90 HTTP/1.1" 200 -
+2025-12-11 14:51:14,494 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:51:14] "POST /inf_coin/90 HTTP/1.1" 200 -
+2025-12-11 14:51:30,473 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:51:31,805 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:51:31,809 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:51:31,809 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:51:31,903 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:51:31,904 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:51:31,904 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:51:32,973 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90362.07
+2025-12-11 14:51:32,974 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90362.07 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -1.016% | STRONG
+2025-12-11 14:51:37,979 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:52:30,476 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:52:31,828 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:52:31,839 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:52:31,839 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:52:31,946 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:52:31,947 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:52:31,947 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:52:32,996 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90292.42
+2025-12-11 14:52:32,997 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90292.42 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -0.940% | STRONG
+2025-12-11 14:52:38,005 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:53:30,479 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:53:31,846 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:53:31,860 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:53:31,860 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:53:31,963 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:53:31,963 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:53:31,963 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:53:33,004 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90359.99
+2025-12-11 14:53:33,004 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90359.99 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -1.014% | STRONG
+2025-12-11 14:53:38,009 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:54:30,482 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:54:31,830 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:54:31,840 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:54:31,841 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:54:31,947 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:54:31,947 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:54:31,947 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:54:33,011 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90359.99
+2025-12-11 14:54:33,011 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90359.99 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -1.014% | STRONG
+2025-12-11 14:54:38,017 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:55:30,484 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:55:32,405 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:55:32,413 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:55:32,414 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:55:32,519 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:55:32,520 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:55:32,520 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:55:33,471 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90302.86
+2025-12-11 14:55:33,472 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90302.86 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -0.952% | STRONG
+2025-12-11 14:55:38,477 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:56:20,838 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:56:20] "GET /get_ai_prediction HTTP/1.1" 200 -
+2025-12-11 14:56:30,484 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:56:31,922 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:56:31,930 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:56:31,930 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:56:32,036 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:56:32,036 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:56:32,037 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:56:33,127 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90302.85
+2025-12-11 14:56:33,128 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90302.85 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -0.952% | STRONG
+2025-12-11 14:56:38,132 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)
+2025-12-11 14:56:38,364 - INFO - _log:97 - 127.0.0.1 - - [11/Dec/2025 14:56:38] "POST /get_data_chart HTTP/1.1" 200 -
+2025-12-11 14:57:30,488 - INFO - get_current_prediction:82 - شروع دریافت داده از بایننس...
+2025-12-11 14:57:31,873 - INFO - get_current_prediction:88 - داده کندل‌ها دریافت شد. تعداد: 600
+2025-12-11 14:57:31,885 - INFO - get_current_prediction:103 - دیتافریم اولیه ساخته شد.
+2025-12-11 14:57:31,885 - INFO - get_current_prediction:108 - در حال افزودن اندیکاتورهای تکنیکال (ta-lib)...
+2025-12-11 14:57:31,986 - INFO - get_current_prediction:111 - تعداد کل فیچرها بعد از افزودن TA: 91
+2025-12-11 14:57:31,986 - INFO - get_current_prediction:131 - فیچرهای انتخاب شده (10): ['close', 'volume', 'momentum_rsi', 'momentum_stoch_rsi', 'momentum_tsi', 'trend_macd', 'trend_macd_signal', 'trend_macd_diff', 'volatility_bbw', 'volatility_kcc']
+2025-12-11 14:57:31,986 - INFO - get_current_prediction:137 - در حال پیش‌بینی...
+2025-12-11 14:57:33,032 - INFO - get_current_prediction:147 - قیمت فعلی از API: 90302.85
+2025-12-11 14:57:33,033 - INFO - get_current_prediction:168 - پیش‌بینی کامل شد | قیمت فعلی: 90302.85 | پیش‌بینی ۱۰ دقیقه بعد: 89443.60 | تغییر: -0.952% | STRONG
+2025-12-11 14:57:38,040 - ERROR - save_to_db:75 - خطا در ذخیره‌سازی در دیتابیس: 2005 (HY000): Unknown MySQL server host 'db' (8)

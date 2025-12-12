@@ -1,4 +1,4 @@
-document.getElementById('ai-prediction-btn').addEventListener('click', async function() {
+window.addEventListener('load', async function() {
     const box = document.getElementById('ai-prediction-box');
     const content = box.querySelector('.ai-content');
     const timestampEl = document.getElementById('ai-timestamp');

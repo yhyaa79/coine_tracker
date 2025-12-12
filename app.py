@@ -1,7 +1,7 @@
 import os
 # بالای فایل، بعد از importها این خط رو اضافه کن
 from flask import Flask, request, jsonify, Response, session, send_from_directory, render_template
-from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description, get_dollar_price, get_coin_data, get_current_prediction
+from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description, get_dollar_price, get_coin_data
 import requests
 """ from utils import 
 from config import  """
@@ -9,7 +9,7 @@ import uuid
 import threading
 import mysql.connector
 from mysql.connector import Error
-from ai_prediction import get_current_prediction, save_to_db  # فقط اگر نیاز داری از توابعش استفاده کنی
+from ai_prediction import get_current_prediction, save_to_db  
 
 
 
@@ -50,11 +50,6 @@ def run_prediction_bot():
             prediction = get_current_prediction()   # این تابع باید از ai_prediction.py در دسترس باشه
             save_to_db(prediction)
 
-            print(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | "
-                  f"{prediction['direction']} {prediction['strength']} | "
-                  f"{prediction['current_price']} → {prediction['predicted_price_10min']} "
-                  f"({prediction['change_percent']:+.3f}%)")
-
             elapsed = time.time() - start_time
             sleep_time = max(0, 60 - elapsed)
             time.sleep(sleep_time)
@@ -70,7 +65,6 @@ def run_prediction_bot():
 def start_background_bot():
     bot_thread = threading.Thread(target=run_prediction_bot, daemon=True)
     bot_thread.start()
-    print("ربات پیش‌بینی BTC در پس‌زمینه شروع شد (Thread جداگانه)")
 
 # اجرای ربات دقیقاً وقتی که Flask شروع می‌شه
 with app.app_context():
@@ -91,7 +85,6 @@ COINLORE_API_ALL_COINS = "https://api.coinlore.com/api/tickers/"
 COINLORE_API_CRYPTO_MARKET = "https://api.coinlore.net/api/global/"
 
 
-print("..... 1 ......")
 @app.route('/all_coins')
 def all_coins():
     try:
@@ -128,7 +121,6 @@ def all_coins():
     
 
 
-print("..... 2 ......")
 @app.route('/crypto_market')
 def crypto_market():
     try:
@@ -168,7 +160,6 @@ def crypto_market():
         return jsonify([]), 500
     
     
-print("..... 3 ......")
 @app.route('/inf_coin/<int:coinID>', methods=['POST', 'GET'])
 def inf_coin(coinID):
     try:
@@ -221,7 +212,6 @@ def inf_coin(coinID):
     
 
 
-print("..... 4 ......")
 @app.route('/get_data_chart', methods=['POST'])
 def get_data_chart():
     try:
@@ -333,7 +323,6 @@ def get_ai_prediction():
             conn.close()
 
 
-print("..... 5 ......")
 @app.route('/data_coin/<coin_id>', methods=['POST'])  # بهتره از string باشه نه int
 def data_coin(coin_id: str):
     try:
@@ -373,7 +362,7 @@ def data_coin(coin_id: str):
 
 
 
-print("..... 6 ......")
+
 @app.route('/get_description/<coin>', methods=['GET'])
 def get_description(coin):
     try:

@@ -15,23 +15,10 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.js"></script>
 
+
     <style>
-        canvas {
-            width: 100% !important;
-            height: 500px !important;
-        }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
     </style>
-
-
-<style>
-
-</style>
 </head>
 
 <body style="overflow: hidden;">
@@ -101,26 +88,7 @@
                                     کندل استیک
                                 </button>
                             </div>
-
-                            <!-- دکمه جدید AI -->
-                            <button id="ai-prediction-btn" class="ai-btn" title="پیش‌بینی ۱۰ دقیقه آینده با هوش مصنوعی">
-
-                                پیش‌بینی AI
-                            </button>
                         </div>
-                    </div>
-
-                    <!-- باکس نمایش پیش‌بینی AI -->
-                    <div id="ai-prediction-box" class="ai-prediction-box" style="display: none;">
-                        <div class="ai-header">
-
-                            <strong>پیش‌بینی هوش مصنوعی (۱۰ دقیقه آینده)</strong>
-                        </div>
-                        <div class="ai-content">
-
-                        </div>
-                        <small id="ai-timestamp" style="color:#94a3b8; margin-top:8px; display:block;">در حال
-                            بارگذاری...</small>
                     </div>
 
                     <h2 id="coin-title">در حال بارگذاری...</h2>
@@ -147,6 +115,24 @@
                                 <div class="stat-value stat-volume">$0.00B</div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- دکمه AI -->
+                    <!--                     <button id="ai-prediction-btn" class="ai-btn" title="پیش‌بینی ۱۰ دقیقه آینده با هوش مصنوعی">
+                        پیش‌بینی AI
+                    </button> -->
+
+                    <!-- باکس نمایش پیش‌بینی AI -->
+                    <div id="ai-prediction-box" class="ai-prediction-box" style="display: none;">
+                        <div class="ai-header">
+
+                            <strong>پیش‌بینی هوش مصنوعی (۱۰ دقیقه آینده)</strong>
+                        </div>
+                        <div class="ai-content">
+
+                        </div>
+                        <small id="ai-timestamp" style="color:#94a3b8; margin-top:8px; display:block;">در حال
+                            بارگذاری...</small>
                     </div>
 
                     <div id="showDataCoin"></div>

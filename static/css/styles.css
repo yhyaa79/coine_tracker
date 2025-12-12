@@ -738,7 +738,7 @@ span {
 
 .chart-type-buttons {
     position: absolute;
-    left: 0px;
+    /* left: 0px; */
     margin-top: 5px;
     width: 180px;
     text-align: center;
@@ -774,9 +774,7 @@ span {
 #priceChart {
     display: block;
     box-sizing: border-box;
-    height: 749px;
-    width: 548px;
-    margin-top: 35px;
+    margin-top: 23px;
 }
 
 
@@ -937,12 +935,15 @@ span {
 
 
 .ai-prediction-box {
-    margin-top: 16px;
-    border: 1px solid #334155;
-    border-radius: 12px;
-    background: #0f172a;
-    padding: 16px;
-    font-size: 0.95rem;
+    line-height: 1.85;
+    color: rgb(189, 189, 189);
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 2px 8px;
+    display: grid;
+    width: 92%;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 2% 4%;
 }
 
 .ai-header {
@@ -960,13 +961,19 @@ span {
 
 .ai-pred-item {
     padding: 10px 0;
-    border-bottom: 1px dashed #1e293b;
+    /* border-bottom: 1px dashed #1e293b; */
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    /* align-items: center; */
     flex-wrap: wrap;
     gap: 8px;
     font-size: 0.9rem;
+    /* text-align: center; */
+    background: rgba(255, 255, 255, 0.04);
+    /* display: flow; */
+    border-radius: 8px;
+    padding: 2% 4%;
+    margin-top: 10px;
 }
 
 .ai-pred-item.latest {

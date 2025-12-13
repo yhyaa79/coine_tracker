@@ -279,56 +279,39 @@ from deep_translator import GoogleTranslator
 
 
 
-# ───── ساخت جدول (فقط اولین بار اجرا می‌شه) ─────
-def create_table_if_not_exists():
-    conn = mysql.connector.connect(**config)
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS coin_descriptions (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            coin_id VARCHAR(100) UNIQUE NOT NULL,
-            english_description LONGTEXT,
-            persian_description LONGTEXT,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    """)
-    conn.commit()
-    cursor.close()
-    conn.close()
 
 # ───── تابع اصلی: دریافت توضیحات فارسی (با کش در دیتابیس) ─────
 def get_persian_description(coin_id="bitcoin"):
-    create_table_if_not_exists()  # مطمئن می‌شه جدول وجود داره
-    
-    conn = mysql.connector.connect(**config)
-    cursor = conn.cursor(dictionary=True)
-    
-    # ۱. اول چک کن ببین توی دیتابیس هست یا نه
-    cursor.execute("SELECT persian_description FROM coin_descriptions WHERE coin_id = %s", (coin_id,))
-    row = cursor.fetchone()
-    
-    if row and row['persian_description']:
-        cursor.close()
-        conn.close()
-        return row['persian_description']
-    
-    # ۲. اگر نبود → از CoinGecko بگیر
-    url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
+
+    conn = None
+    cursor = None
     
     try:
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor(dictionary=True)
+        
+        cursor.execute("SELECT persian_description FROM coin_descriptions WHERE coin_id = %s", (coin_id,))
+        row = cursor.fetchone()
+
+        if row and row['persian_description']:
+            return row['persian_description']
+        
+        coin_id_lower = coin_id.lower()  # تبدیل به حروف کوچک
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id_lower}"
+        
         response = requests.get(url, timeout=15)
-        response.raise_for_status()
+        
+        response.raise_for_status()  # اگر 4xx یا 5xx باشه exception می‌ندازه
         data = response.json()
-        raw_desc = data["description"]["en"]
+        
+        raw_desc = data.get("description", {}).get("en", "")
         
         if not raw_desc.strip():
             return "توضیحات انگلیسی برای این کوین موجود نیست."
         
-        # پاک‌سازی HTML
         clean_text = re.sub('<.*?>', '', raw_desc)
         clean_text = re.sub(r'\s+', ' ', clean_text).strip()
         
-        # ترجمه (با تقسیم متن بلند)
         if len(clean_text) > 4500:
             parts = [clean_text[i:i+4500] for i in range(0, len(clean_text), 4500)]
             translated_parts = [GoogleTranslator(source='en', target='fa').translate(p) for p in parts]
@@ -336,31 +319,30 @@ def get_persian_description(coin_id="bitcoin"):
         else:
             persian_text = GoogleTranslator(source='en', target='fa').translate(clean_text)
         
-        # ۳. ذخیره در دیتابیس (INSERT یا UPDATE)
         cursor.execute("""
             INSERT INTO coin_descriptions (coin_id, english_description, persian_description)
-            VALUES (%s, %s, %s)
+            VALUES (%s, %s, %s) AS new_vals
             ON DUPLICATE KEY UPDATE
-                english_description = VALUES(english_description),
-                persian_description = VALUES(persian_description),
+                english_description = new_vals.english_description,
+                persian_description = new_vals.persian_description,
                 updated_at = CURRENT_TIMESTAMP
         """, (coin_id, clean_text, persian_text))
-        
+
         conn.commit()
-        cursor.close()
-        conn.close()
-        
         return persian_text
         
     except requests.exceptions.RequestException as e:
-        cursor.close()
-        conn.close()
         return f"خطا در ارتباط با CoinGecko: {e}"
     except Exception as e:
-        cursor.close()
-        conn.close()
+        print(f" خطای غیرمنتظره: {type(e).__name__} - {e}")
+        import traceback
+        traceback.print_exc()  # این خط کامل stack trace رو پرینت می‌کنه
         return f"خطای غیرمنتظره: {e}"
-    
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 
 
@@ -368,31 +350,6 @@ def get_persian_description(coin_id="bitcoin"):
 # آدرس API جدید
 API_URL = "https://api.tgju.org/v1/market/indicator/summary-table-data/price_dollar_rl"
 
-def create_dollar_table_if_not_exists():
-    conn = mysql.connector.connect(**config)
-    cursor = conn.cursor()
-    
-    create_table_query = """
-    CREATE TABLE IF NOT EXISTS dollar_price (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        price_rial BIGINT NOT NULL,
-        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-        INDEX idx_updated_at (updated_at)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    """
-    cursor.execute(create_table_query)
-    
-    # اگر جدول خالی بود، یک رکورد اولیه با زمان قدیمی بذاریم
-    cursor.execute("SELECT COUNT(*) FROM dollar_price")
-    if cursor.fetchone()[0] == 0:
-        cursor.execute("""
-            INSERT INTO dollar_price (price_rial, updated_at) 
-            VALUES (0, '2000-01-01 00:00:00')
-        """)
-    
-    conn.commit()
-    cursor.close()
-    conn.close()
 
 def fetch_dollar_from_api():
     """
@@ -453,13 +410,6 @@ def get_dollar_price():
     تابع اصلی برای دریافت قیمت دلار
     اگر قیمت بیش از 10 دقیقه قدیمی باشد، از API جدید دریافت می‌کند
     """
-    try:
-        create_dollar_table_if_not_exists()
-    except Exception as e:
-        print(f"خطا در ایجاد جدول: {e}")
-        # اگر جدول ایجاد نشد، مستقیم از API بگیریم
-        price = fetch_dollar_from_api()
-        return price if price and price > 100000 else 1000000
     
     try:
         conn = mysql.connector.connect(**config)

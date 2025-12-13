@@ -19,6 +19,8 @@ import pandas as pd
 import requests
 from typing import Optional, Literal
 
+
+
 def get_crypto_chart_binance(
     symbol: str = "BTCUSDT",
     interval: Literal["1m", "3m", "5m", "15m", "30m", "1h", "2h", "4h", "6h", "8h", "12h", "1d", "3d", "1w", "1M"] = "1d",
@@ -359,61 +361,6 @@ def get_persian_description(coin_id="bitcoin"):
         conn.close()
         return f"خطای غیرمنتظره: {e}"
     
-
-
-
-### ثبت و دریافت رای برای هر کوین
-""" 
-
-
-
-def get_db_connection():
-    try:
-        conn = mysql.connector.connect(**config)
-        if conn.is_connected():
-            return conn
-    except Error as e:
-        print("خطا در اتصال به دیتابیس:", e)
-    return None
-
-def create_coin_votes_table():
-    conn = get_db_connection()
-    if not conn:
-        return False
-
-    cursor = conn.cursor()
-
-    create_table_query = `
-    CREATE TABLE IF NOT EXISTS coin_votes (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        coin VARCHAR(50) NOT NULL,
-        vote_type ENUM('bullish', 'bearish') NOT NULL,
-        user_ip VARCHAR(45) NOT NULL,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        INDEX idx_coin (coin)   -- فقط ایندکس برای جستجوی سریع
-        -- UNIQUE KEY حذف شد → اجازه رأی چندباره داده میشه
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-    `
-
-    try:
-        cursor.execute("DROP TABLE IF EXISTS coin_votes")  # فقط برای تست — بعداً حذفش کن
-        cursor.execute(create_table_query)
-        conn.commit()
-        print("جدول coin_votes بازسازی شد (رأی چندباره فعال)")
-        return True
-    except Error as e:
-        print("خطا:", e)
-    finally:
-        cursor.close()
-        conn.close()
-
-
- """
-
-
-
-
-
 
 
 

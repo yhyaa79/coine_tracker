@@ -2,6 +2,7 @@ import os
 # بالای فایل، بعد از importها این خط رو اضافه کن
 from flask import Flask, request, jsonify, Response, session, send_from_directory, render_template
 from utils import get_crypto_chart_binance, add_comment_db, get_comments_by_coin, get_persian_description, get_dollar_price, get_coin_data
+from database_setup import create_all_tables_if_not_exist
 import requests
 """ from utils import 
 from config import  """
@@ -31,6 +32,8 @@ coin_tracker/
 └── init_db.sql               # اختیاری – برای ساخت جدول‌ها در اولین اجرا
 '''
 
+# ساخت جدول های دیتابیس 
+create_all_tables_if_not_exist()
 
 app = Flask(__name__,)
 app.secret_key = 'my_secret_key' 
@@ -40,9 +43,6 @@ app.secret_key = 'my_secret_key'
 def run_prediction_bot():
     import time
     from datetime import datetime
-    import logging
-
-    logging.getLogger().info("ربات پیش‌بینی BTC در Thread جداگانه شروع شد...")
 
     while True:
         try:
@@ -58,7 +58,7 @@ def run_prediction_bot():
             print("ربات پیش‌بینی متوقف شد.")
             break
         except Exception as e:
-            logging.error(f"خطا در ربات پیش‌بینی: {e}")
+            print(f"خطا در ربات پیش‌بینی: {e}")
             time.sleep(30)
 
 # -------------------- مهم: اجرای ربات در پس‌زمینه --------------------

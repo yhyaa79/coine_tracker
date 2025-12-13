@@ -10,22 +10,6 @@ from ta import add_all_ta_features
 from datetime import datetime
 import time
 import mysql.connector
-import logging
-from logging.handlers import RotatingFileHandler
-import os
-
-
-# ====================== تنظیمات لاگ ======================
-log_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s')
-log_file = 'btc_predictor.log'
-
-handler = RotatingFileHandler(log_file, maxBytes=10*1024*1024, backupCount=5)
-handler.setFormatter(log_formatter)
-
-# لاگ به کنسول هم داشته باشیم
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(log_formatter)
-
 
 # ====================== تنظیمات اصلی ======================
 

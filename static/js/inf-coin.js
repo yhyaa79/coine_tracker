@@ -41,16 +41,12 @@ async function loadCoinDetail() {
         }
 
         const coin = data[0];
-        
+
         // ذخیره قیمت‌ها در متغیرهای گلوبال
         globalCoinPriceUSD = parseFloat(coin.price_usd) || 0;
         globalCoinPriceToman = parseFloat(coin.price_toman) || 0;
         globalUSDToIRRRate = parseFloat(coin.usd_to_irr_rate) || 0;
 
-        // لاگ کردن برای تست
-        console.log('قیمت دلار:', globalCoinPriceUSD);
-        console.log('قیمت تومان:', globalCoinPriceToman);
-        console.log('نرخ تبدیل:', globalUSDToIRRRate);
 
         // محاسبه ارزش بازار به تومان
         const marketCapToman = (parseFloat(coin.market_cap_usd) || 0) * globalUSDToIRRRate / 10;
@@ -59,7 +55,9 @@ async function loadCoinDetail() {
         // ساخت HTML جزئیات
         document.querySelector('.coin-detail-container').innerHTML = `
             <div class="coin-header">
-                <img src="${imageUrl}" alt="${coin.name}">
+                <img src="${window.imageUrl || 'https://via.placeholder.com/64?text=?'}"
+                alt="${coin.name}"
+                onerror="this.src='https://via.placeholder.com/64?text=?';">
                 <div>
                     <h3>${coin.name} <small>(${coin.symbol.toUpperCase()})</small></h3>
                 </div>

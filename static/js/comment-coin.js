@@ -11,7 +11,7 @@ async function loadCoinComment() {
 
     try {
         const response = await fetch(`/comments_coin/${encodeURIComponent(coinName)}`, {
-            method: 'GET',  // GET برای دریافت داده
+            method: 'GET', // GET برای دریافت داده
             credentials: 'include',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,7 +27,15 @@ async function loadCoinComment() {
         // اگر موفقیت‌آمیز نبود یا داده‌ای نداشت
         if (!result.success || result.count === 0) {
             commentsContainer.innerHTML = `
-                <div style="text-align:center;padding:40px 20px;color:#888;background:#f9f9f9;border-radius:8px;">
+                <div style="
+                    text-align:center;    
+                    color: rgb(189, 189, 189);
+                    margin-bottom: 12px;
+                    box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 3px;
+                    background: rgba(255, 255, 255, 0.04);
+                    border-radius: 8px;
+                    padding: 15px;
+                    ">
                     <p style="font-size:18px;margin:0;">
                         ${result.message || 'هنوز هیچ نظری برای این کوین ثبت نشده است.'}
                     </p>
@@ -91,7 +99,7 @@ function hideCommenting() {
 
 async function addCommentFun() {
     const coinName = getCoinFromUrl();
-    const commentingUsername = document.getElementById('commentingUserame');  // اصلاح نام متغیر
+    const commentingUsername = document.getElementById('commentingUserame'); // اصلاح نام متغیر
     const commentingComment = document.getElementById('commentingComment');
     const commentsContainer = document.getElementById('commentsList'); // اضافه کردن تعریف
 
@@ -103,9 +111,9 @@ async function addCommentFun() {
 
     try {
         const response = await fetch('/add_comment', {
-            method: 'POST',  // ← اینجا باید POST باشه!
+            method: 'POST', // ← اینجا باید POST باشه!
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',  // یا json اگر بخوای
+                'Content-Type': 'application/x-www-form-urlencoded', // یا json اگر بخوای
                 // 'X-Requested-With': 'XMLHttpRequest' // در صورت نیاز CSRF
             },
             credentials: 'include',
@@ -122,14 +130,14 @@ async function addCommentFun() {
 
         const result = await response.json();
 
-        if (result.success || result === true) {  // بسته به چیزی که برمی‌گردونی
+        if (result.success || result === true) { // بسته به چیزی که برمی‌گردونی
             // پاک کردن فیلدها
             commentingUsername.value = '';
             commentingComment.value = '';
 
             hideCommenting();
             alert("نظر شما با موفقیت ثبت شد!");
-            
+
             // اگر می‌خوای لیست کامنت‌ها رو رفرش کنی:
             loadCoinComment()
         } else {

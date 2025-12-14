@@ -23,8 +23,11 @@ async function loadCoinData() {
         }
 
         // تصویر بزرگ رو انتخاب کن
-        const imageUrl = coin.image_large;
-        window.imageUrl = imageUrl
+        // تصویر بزرگ رو انتخاب کن + fallback برای موارد null
+        const imageUrl = coin.image_large || coin.image || 'https://via.placeholder.com/150?text=No+Image';
+        
+        // ذخیره به صورت گلوبال برای استفاده در صفحه دیگر (inf-coin.js)
+        window.imageUrl = imageUrl;
         
         // تاریخ آخرین بروزرسانی به شمسی
         const lastUpdated = coin.last_updated 

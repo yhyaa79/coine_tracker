@@ -30,6 +30,7 @@ def save_to_db(prediction_data):
         conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
         
+        # ابتدا رکورد جدید را درج می‌کنیم
         insert_sql = """
         INSERT INTO btc_predictions 
         (symbol, current_price, predicted_price_10min, change_percent, direction, strength, features_used, prediction_time)
@@ -43,13 +44,31 @@ def save_to_db(prediction_data):
             prediction_data["direction"],
             prediction_data["strength"],
             json.dumps(prediction_data["features_used"], ensure_ascii=False),
-            prediction_data["timestamp"]  # این timestamp دقیق زمان پیش‌بینی هست
+            prediction_data["timestamp"]
         )
         
         cursor.execute(insert_sql, data)
         
+        # حالا اگر تعداد رکورد‌ها بیشتر از 50 شد، قدیمی‌ترین‌ها را حذف می‌کنیم
+        delete_sql = """
+        DELETE FROM btc_predictions 
+        WHERE id NOT IN (
+            SELECT id FROM (
+                SELECT id 
+                FROM btc_predictions 
+                ORDER BY prediction_time DESC 
+                LIMIT 50
+            ) AS keep_rows
+        )
+        """
+        cursor.execute(delete_sql)
+        
+        conn.commit()  # تغییرات را ذخیره می‌کنیم
+        
     except Exception as e:
         print(f"خطا در ذخیره‌سازی در دیتابیس: {e}")
+        if conn and conn.is_connected():
+            conn.rollback()
     finally:
         if conn and conn.is_connected():
             cursor.close()
@@ -144,7 +163,7 @@ if __name__ == "__main__":
             
             # صبر تا دقیقه بعدی (همگام با ثانیه 00)
             elapsed = time.time() - start_time
-            sleep_time = max(0, 60 - elapsed)
+            sleep_time = max(0, 900 - elapsed)  # 900 ثانیه = 15 دقیقه
             time.sleep(sleep_time)
             
         except KeyboardInterrupt:

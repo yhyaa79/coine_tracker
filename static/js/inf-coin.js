@@ -55,9 +55,8 @@ async function loadCoinDetail() {
         // ساخت HTML جزئیات
         document.querySelector('.coin-detail-container').innerHTML = `
             <div class="coin-header">
-                <img src="${window.imageUrl || 'https://via.placeholder.com/64?text=?'}"
-                alt="${coin.name}"
-                onerror="this.src='https://via.placeholder.com/64?text=?';">
+                <img src="${window.imageUrl}"
+                alt="${coin.name}">
                 <div>
                     <h3>${coin.name} <small>(${coin.symbol.toUpperCase()})</small></h3>
                 </div>

@@ -24,11 +24,16 @@ async function loadCoinData() {
 
         // تصویر بزرگ رو انتخاب کن
         // تصویر بزرگ رو انتخاب کن + fallback برای موارد null
-        const imageUrl = coin.image_large || coin.image || 'https://via.placeholder.com/150?text=No+Image';
+        const imageUrl = coin.image_large || coin.image;
         
         // ذخیره به صورت گلوبال برای استفاده در صفحه دیگر (inf-coin.js)
         window.imageUrl = imageUrl;
-        
+
+
+        const nameUrl = coin.name;
+        window.nameUrl = nameUrl;
+
+
         // تاریخ آخرین بروزرسانی به شمسی
         const lastUpdated = coin.last_updated 
             ? new Date(coin.last_updated).toLocaleString('fa-IR')

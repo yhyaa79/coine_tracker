@@ -1,4 +1,4 @@
-window.addEventListener('load', async function() {
+document.addEventListener('DOMContentLoaded', async function () {
     const box = document.getElementById('ai-prediction-box');
     const content = box.querySelector('.ai-content');
     const timestampEl = document.getElementById('ai-timestamp');
@@ -35,11 +35,11 @@ window.addEventListener('load', async function() {
         result.predictions.forEach((pred, index) => {
             const arrow = pred.change_percent > 0 ? '↑' : '↓';
             const color = pred.change_percent > 0 ? '#10b981' : '#ef4444';
-            const strengthBadge = pred.strength === 'STRONG' ? 'قوی' : 
-                                 pred.strength === 'WEAK' ? 'ضعیف' : 'خنثی';
+            const strengthBadge = pred.strength === 'STRONG' ? 'قوی' :
+                pred.strength === 'WEAK' ? 'ضعیف' : 'خنثی';
 
             const strengthColor = pred.strength === 'STRONG' ? '#f59e0b' :
-                                 pred.strength === 'WEAK' ? '#64748b' : '#94a3b8';
+                pred.strength === 'WEAK' ? '#64748b' : '#94a3b8';
 
             listHTML += `
                 <div class="ai-pred-item ${index === 0 ? 'latest' : ''}">

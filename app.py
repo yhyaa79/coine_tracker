@@ -51,7 +51,7 @@ def run_prediction_bot():
             save_to_db(prediction)
 
             elapsed = time.time() - start_time
-            sleep_time = max(0, 60 - elapsed)
+            sleep_time = max(0, 900 - elapsed)
             time.sleep(sleep_time)
 
         except KeyboardInterrupt:

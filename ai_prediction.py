@@ -153,7 +153,7 @@ def get_current_prediction():
     return result
 
 # ====================== حلقه اصلی ======================
-if __name__ == "__main__":
+""" if __name__ == "__main__":
     
     while True:
         try:
@@ -170,4 +170,4 @@ if __name__ == "__main__":
             break
         except Exception as e:
             print(f"خطای غیرمنتظره در حلقه اصلی: {e}")
-            time.sleep(30)  # در صورت خطا کمی صبر کن و دوباره تلاش کن
+            time.sleep(30)  # در صورت خطا کمی صبر کن و دوباره تلاش کن """

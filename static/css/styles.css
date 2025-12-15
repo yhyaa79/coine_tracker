@@ -1,5 +1,6 @@
 * {
     outline: none;
+    font-weight: 100;
 }
 
 
@@ -20,7 +21,7 @@ h4,
 h3,
 h2,
 h1 {
-    color: #bdbdbd;
+    color: #ffffff;
     margin: 0;
 }
 
@@ -37,17 +38,17 @@ h4 {
 }
 
 p {
-    color: #bdbdbd;
+    color: #ffffff;
     margin: 0;
     font-size: 16px;
 }
 
 strong {
-    color: #bdbdbd;
+    color: #ffffff;
 }
 
 span {
-    color: #bdbdbd;
+    color: #ffffff;
 }
 
 
@@ -111,7 +112,6 @@ button {
 
 .stat-value {
     font-size: 16px;
-    font-weight: bold;
 }
 
 
@@ -142,7 +142,7 @@ button {
     display: flex;
     width: 100%;
     border-bottom: 2px solid #575757;
-    color: #bdbdbd;
+    color: #ffffff;
     font-size: 16px;
 }
 
@@ -161,7 +161,7 @@ button {
 .coin {
     align-items: center;
     display: flex;
-    color: #bdbdbd;
+    color: #ffffff;
     font-size: 13px;
     width: 100%;
     border-bottom: 1px solid #575757;
@@ -314,7 +314,7 @@ span {
     resize: none;
 
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border-radius: 8px;
     padding: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -326,7 +326,7 @@ span {
     min-height: 100px;
 
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border-radius: 8px;
     padding: 8px;
     margin-bottom: 12px;
@@ -336,7 +336,7 @@ span {
 .commentin-add {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
 
     border-radius: 8px;
     padding: 6px 3%;
@@ -357,7 +357,7 @@ span {
 .survey {
 
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border-radius: 8px;
     padding: 15px;
     padding-bottom: 05px;
@@ -390,7 +390,7 @@ span {
     width: 50px;
     height: 50px;
     background: #3b3f48;
-    color: #bdbdbd;
+    color: #ffffff;
     font-size: 23px;
 }
 
@@ -459,7 +459,6 @@ span {
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 14px;
-    font-weight: 700;
     color: white;
     text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     z-index: 3;
@@ -478,7 +477,6 @@ span {
 
     width: 90px;
     border-radius: 8px;
-    font-weight: bold;
     cursor: pointer;
     transition: 0.3s;
 }
@@ -624,7 +622,7 @@ span {
 .comment-item {
     /*  */
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 12px;
@@ -660,22 +658,20 @@ span {
     text-align: center;
     flex: 1;
     min-width: 120px;
-    color: #bdbdbd;
+    color: #ffffff;
 }
 
 .stat-label {
     font-size: 12px;
     margin-bottom: 5px;
-    font-weight: 500;
 }
 
 .stat-value {
-    font-weight: bold;
     font-size: 18px;
 }
 
 .stat-price {
-    color: #bdbdbd;
+    color: #ffffff;
 }
 
 .stat-change-positive {
@@ -687,11 +683,11 @@ span {
 }
 
 .stat-high-low {
-    color: #bdbdbd;
+    color: #ffffff;
 }
 
 .stat-volume {
-    color: #bdbdbd;
+    color: #ffffff;
 }
 
 /* استایل خطا */
@@ -721,7 +717,7 @@ span {
 .period-btn {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     padding: 6px 3%;
@@ -752,7 +748,7 @@ span {
 .chart-type-btn {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     padding: 6px 3%;
@@ -792,7 +788,7 @@ span {
 #selectDollarToman {
     text-align: center;
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border: none;
     border-radius: 8px;
     padding: 6px 3%;
@@ -806,7 +802,7 @@ span {
     resize: none;
     border: none;
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border-radius: 8px;
     padding: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -817,7 +813,7 @@ span {
     resize: none;
     border: none;
     background: rgba(255, 255, 255, 0.04);
-    color: #bdbdbd;
+    color: #ffffff;
     border-radius: 8px;
     padding: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -826,7 +822,7 @@ span {
 .coin-description-box {
     line-height: 1.85;
     font-size: 15px;
-    color: #bdbdbd;
+    color: #ffffff;
     direction: rtl;
     text-align: justify;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -844,7 +840,7 @@ span {
 .coin-container {
     line-height: 1.85;
     /* font-size: 15px; */
-    color: #bdbdbd;
+    color: #ffffff;
     /* direction: rtl; */
     /* text-align: justify; */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -872,7 +868,7 @@ span {
 .link-twitter,
 .link-reddit,
 .link-whitepaper {
-    color: #bdbdbd;
+    color: #ffffff;
     margin: 10px
 }
 
@@ -888,7 +884,7 @@ span {
 }
 
 .link-explorer {
-    color: #bdbdbd;
+    color: #ffffff;
     text-align: left;
     display: flow;
 }

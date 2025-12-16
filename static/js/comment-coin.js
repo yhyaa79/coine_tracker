@@ -36,7 +36,7 @@ async function loadCoinComment() {
                     border-radius: 8px;
                     padding: 15px;
                     ">
-                    <p style="font-size:18px;margin:0;">
+                    <p>
                         ${result.message || 'هنوز هیچ نظری برای این کوین ثبت نشده است.'}
                     </p>
                 </div>

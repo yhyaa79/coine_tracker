@@ -43,9 +43,6 @@ async function getDataChart(coin, period = '60') {
 }
 
 function renderChart(data, coinName, period) {
-    console.log('%crenderChart شروع شد', 'color: cyan; font-weight: bold');
-    console.log('currentChartType:', currentChartType);
-    console.log('تعداد رکوردهای دریافتی:', data.length);
 
     const ctx = document.getElementById('priceChart');
     if (!ctx) {
@@ -153,7 +150,6 @@ function renderChart(data, coinName, period) {
     };
 
     if (currentChartType === 'line') {
-        console.log('%cساخت چارت خطی...', 'color: green; font-weight: bold');
         
         const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 450);
         if (isPositiveOverall) {
@@ -324,10 +320,7 @@ function renderChart(data, coinName, period) {
             }
         });
 
-        console.log('%cچارت خطی ساخته شد', 'color: green');
-
     } else {
-        console.log('%cساخت چارت کندل استیک...', 'color: yellow; font-weight: bold');
 
         try {
             chartInstance = new Chart(ctx, {
@@ -467,7 +460,6 @@ function renderChart(data, coinName, period) {
                 }
             });
 
-            console.log('%cچارت کندل استیک با موفقیت ساخته شد!', 'color: green; font-weight: bold');
 
         } catch (error) {
             console.error('%cخطا در ساخت چارت کندل استیک:', 'color: red; font-size: 16px');

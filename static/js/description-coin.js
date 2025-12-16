@@ -1,6 +1,3 @@
-console.log("aaaaaaa");
-
-
 // تابع جدید برای تبدیل نقطه به خط جدید
 function formatDescriptionWithLineBreaks(text) {
     if (!text || typeof text !== 'string') return '';
